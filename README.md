@@ -10,6 +10,16 @@
 
  <p align="justify">This website serves as an online portfolio showcasing my web presence, resume, story, and featured projects.</p>
 
+## Tech Stack
+
+Built with **React 18 + Vite** (multi-page SPA via React Router), hand-rolled CSS design system, and no runtime UI dependencies. Deployed to **GitHub Pages** through a GitHub Actions workflow (`.github/workflows/deploy.yml`) that runs `vite build` and publishes `dist/`.
+
+```bash
+npm install     # install deps
+npm run dev     # local dev server
+npm run build   # production build → dist/
+```
+
 ## Domain
 
 <li>Live Domain: https://MagiTech.site</li>
@@ -20,7 +30,7 @@
 
 ## Repo
 
-<li>Default Repo: https://github.com/itsDigvijayisng/digvijaysing.github.io.git/</li>
+<li>Default Repo: https://github.com/itsDigvijaysing/itsDigvijaysing.github.io.git/</li>
 <li>Old Repo: https://royaltechie.github.io/digvijaysing.github.io/</li>
 
 ## Current Layout

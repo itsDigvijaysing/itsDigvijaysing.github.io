@@ -1,0 +1,141 @@
+/* Digvijaysing Portfolio — design system (Vite + React) */
+
+:root {
+  --bg: #f5f8fd;
+  --bg-elevated: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #ffffff;
+  --text: #12233d;
+  --text-muted: #5a6b82;
+  --text-dim: #667488; /* darkened for WCAG AA on light bg/cards (~4.6:1) */
+  --accent: #149ddd;
+  --accent-2: #2740b6;
+  --accent-3: #2740b6;
+  --accent-soft: rgba(20, 157, 221, 0.12);
+  --border: rgba(18, 35, 61, 0.10);
+  --border-strong: rgba(18, 35, 61, 0.16);
+  --gradient: linear-gradient(120deg, #2b32b2 0%, #1488cc 100%);
+  --slab: linear-gradient(115deg, #2b32b2 0%, #3f57d8 45%, #1488cc 100%);
+  --shadow: 0 1px 3px rgba(18, 35, 61, 0.07), 0 1px 2px rgba(18, 35, 61, 0.05);
+  --shadow-hover: 0 14px 32px rgba(18, 35, 61, 0.13);
+  --radius: 12px;
+  --radius-lg: 20px;
+  --nav-h: 4.25rem;
+  --max-w: 1200px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --font: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+a { color: var(--accent-2); text-decoration: none; transition: color 0.2s; }
+a:hover { color: var(--accent); }
+
+img { max-width: 100%; display: block; }
+
+button { font-family: inherit; }
+
+.container { width: min(var(--max-w), 100% - 2rem); margin-inline: auto; }
+
+/* Film-grain overlay (subtle paper texture) */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.03;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+/* ── Focus & selection (a11y + polish) ── */
+:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+/* Only reveal outlines for keyboard users; pointer clicks stay clean. */
+:focus:not(:focus-visible) { outline: none; }
+/* <main> is a programmatic focus target for route changes — never ring it. */
+#main-content:focus, #main-content:focus-visible { outline: none; }
+
+::selection { background: rgba(39, 64, 182, 0.16); color: var(--text); }
+
+/* Subtle branded scrollbar */
+* { scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 999px; border: 2px solid var(--bg); }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+/* ── Skip link (WCAG 2.4.1 Bypass Blocks) ── */
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1000;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  background: var(--accent-2);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-160%);
+  transition: transform 0.2s var(--ease);
+}
+.skip-link:focus { transform: translateY(0); color: #fff; }
+
+/* ── Editorial primitives (adapted from the MagiTech reference) ── */
+/* Serif-italic accent — one deliberate touch per view */
+.serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--accent-2);
+}
+
+/* Mono section index: "01 —  SELECTED WORK" */
+.section-index {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+.section-index__n { color: var(--accent-2); font-weight: 700; }
+.section-index__n::after {
+  content: '';
+  display: inline-block;
+  width: 1.5rem;
+  height: 1px;
+  margin: 0 0.1rem 0.22em 0.55rem;
+  background: var(--border-strong);
+  vertical-align: middle;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+  html { scroll-behavior: auto; }
+  .skip-link { transition: none; }
+}

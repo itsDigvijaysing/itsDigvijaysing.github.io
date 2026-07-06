@@ -1,0 +1,293 @@
+/* Single source of truth for all project pages.
+   Inlined as a global (no fetch) so pages work over HTTP *and* from file://. */
+window.PROJECTS = [
+  {
+    "title": "LightSpeak AI",
+    "subtitle": "Multi-Channel Conversational AI for Customer Care",
+    "slug": "lightspeak-ai",
+    "date": "2025-11",
+    "featured": true,
+    "tags": ["AI", "Voice", "RAG", "Full Stack"],
+    "desc": "Production conversational AI unifying voice, chat, and email with real-time STT/TTS, multilingual support, and hybrid RAG.",
+    "link": "https://lightspeak.ai/",
+    "linkLabel": "Visit Website",
+    "github": null,
+    "private": false,
+    "overview": "Multi-tenant customer-care platform handling support, sales, and marketing across voice, WhatsApp, email, and SMS. Hybrid RAG with LLM intent classification improved answer relevance by 18%. Deployed for partners including IIT Hyderabad and ITIC Incubator.",
+    "highlights": [
+      "Real-time STT/TTS pipelines with sub-second voice latency",
+      "Hybrid RAG (semantic + keyword) with LLM intent routing",
+      "Multilingual support for major Indian languages"
+    ],
+    "techStack": ["Python", "FastAPI", "React", "Hybrid RAG", "STT/TTS", "AWS"]
+  },
+  {
+    "title": "Indian Law AI Portal",
+    "subtitle": "Agentic RAG for Indian Legal Queries",
+    "slug": "indian-law-ai-portal",
+    "date": "2026-04",
+    "featured": true,
+    "tags": ["AI", "RAG", "Agents"],
+    "desc": "Agentic legal assistant with four domain agents over official Indian statutes using RAG Fusion and FAISS.",
+    "link": null,
+    "github": "https://github.com/itsDigvijaysing/Indian-Law-AI-Portal",
+    "private": false,
+    "overview": "Full-stack legal assistant with intent routing to Criminal, Civil, Constitutional, or General agents. RAG Fusion (n=3) over ~2,600 chunks from six statute PDFs. Groq Llama 3.3 70B synthesis with cited JSON responses.",
+    "highlights": [
+      "Four domain-specialized agents with RAG Fusion retrieval",
+      "FAISS index over Constitution, BNS, BNSS, IPC, CrPC, CPC",
+      "Cited JSON responses from Groq-based LLMs"
+    ],
+    "techStack": ["FastAPI", "React 18", "Groq", "FAISS", "RAG Fusion", "Python"]
+  },
+  {
+    "title": "Web Agents",
+    "subtitle": "LLM Browser Automation via CDP",
+    "slug": "web-agents",
+    "date": "2026-02",
+    "featured": false,
+    "tags": ["AI", "Agents", "Python"],
+    "desc": "Async browser automation for LLM-driven tasks — extended during Samsung SRIB internship with fine-tuning and evaluation pipelines.",
+    "link": null,
+    "github": "https://github.com/itsDigvijaysing/web_agents",
+    "private": false,
+    "overview": "Async agent stack on Chrome DevTools Protocol. Configurable LLMs plan actions from DOM/accessibility state; modular watchdogs handle downloads, popups, and crashes. Work at Samsung SRIB improved task success rate by 400% and reduced token payload by 40%.",
+    "highlights": [
+      "Multi-provider LLM support (OpenAI, Gemini, Anthropic, Groq, Ollama)",
+      "MCP server mode and event-driven watchdogs",
+      "SRIB internship: fine-tuning, benchmarking, token optimization"
+    ],
+    "techStack": ["Python 3.11+", "CDP", "MCP", "Docker", "asyncio"]
+  },
+  {
+    "title": "PIRvision Classifier",
+    "subtitle": "PIR Sensor Human Activity Recognition",
+    "slug": "pirvision-classifier",
+    "date": "2025-06",
+    "featured": false,
+    "tags": ["ML", "IoT", "Deep Learning"],
+    "desc": "CNN–LSTM hybrid achieving 0.96 F1 on PIR occupancy data for cost-efficient IoT deployment.",
+    "link": null,
+    "github": "https://github.com/itsDigvijaysing/pirvision-classifier-model",
+    "private": false,
+    "overview": "Human activity classification on PIRvision low-energy sensor data. CNN–LSTM hybrid with 12+ engineered temporal features, noise injection, and class balancing outperformed MLP and GRU baselines.",
+    "highlights": [
+      "0.96 F1 score on vacancy / stationary / active motion classes",
+      "12+ engineered temporal and statistical features",
+      "Designed for automated lighting and safety monitoring"
+    ],
+    "techStack": ["PyTorch", "CNN-LSTM", "Scikit-learn", "Pandas", "NumPy"]
+  },
+  {
+    "title": "Adversarial Robustness in Florence-2",
+    "subtitle": "VLM Defense Without Retraining",
+    "slug": "florence-2-adversarial",
+    "date": "2025-04",
+    "featured": false,
+    "tags": ["ML", "VLM", "Research"],
+    "desc": "Defense strategies for Florence-2 object detection under PGD/FGSM — IEEE APSCON 2026 accepted.",
+    "link": null,
+    "github": null,
+    "private": true,
+    "overview": "Evaluated adversarial robustness of Florence-2-Base on COCO under FGSM and PGD attacks. Retraining-free defense pipeline using input and feature-level transformations recovered ~30% performance under attack.",
+    "highlights": [
+      "IEEE APSCON 2026 — accepted",
+      "PGD/FGSM attack evaluation on COCO object detection",
+      "Input + feature-level transformation defense pipeline"
+    ],
+    "techStack": ["PyTorch", "Florence-2", "FGSM", "PGD", "Transformers"]
+  },
+  {
+    "title": "Stat-Up",
+    "subtitle": "Anime-RPG Gamified Daily Tracker",
+    "slug": "stat-up",
+    "date": "2026-05",
+    "featured": true,
+    "tags": ["Mobile", "Android", "Kotlin"],
+    "desc": "Offline-first Android app turning daily tasks into RPG quests with hexagon stats and Todoist sync.",
+    "link": null,
+    "github": "https://github.com/itsDigvijaysing/Stat-Up",
+    "private": false,
+    "overview": "Anime-inspired RPG status app in Kotlin 2.1 and Jetpack Compose. Six stats on a hexagon radar, E-to-S rank progression, 28-day streak calendar, and optional Todoist sync every 15 minutes.",
+    "highlights": [
+      "MVVM + Koin DI, Room, DataStore, Ktor",
+      "Fully offline by default with opt-in cloud sync",
+      "Liquid-glass Material 3 UI"
+    ],
+    "techStack": ["Kotlin 2.1", "Jetpack Compose", "Room", "Koin", "Todoist API"]
+  },
+  {
+    "title": "Jira Automation Portal",
+    "subtitle": "AI-Generated Subtasks & Test Cases",
+    "slug": "jira-automation-portal",
+    "date": "2025-07",
+    "featured": true,
+    "tags": ["AI", "Productivity", "Full Stack"],
+    "desc": "React + Django portal that expands requirements into Jira dev subtasks and test cases via Gemini.",
+    "link": null,
+    "github": "https://github.com/itsDigvijaysing/Jira_Automation_Portal",
+    "private": false,
+    "overview": "Issue viewer plus AI ticket generator. Free-form requirements become 3–5 dev subtasks with matching test cases. API key rotation and JSON validation for rate-limit resilience.",
+    "highlights": [
+      "Jira REST API integration with React UI",
+      "Google Gemini for structured ticket generation",
+      "Rotating API keys for rate-limit resilience"
+    ],
+    "techStack": ["React", "Django REST", "Google Gemini", "Jira API", "Tailwind CSS"]
+  },
+  {
+    "title": "AI Linux Assistant",
+    "subtitle": "Fully Local Voice AI Pipeline",
+    "slug": "ai-linux-assistant",
+    "date": "2026-02",
+    "featured": true,
+    "tags": ["AI", "LLM", "Python"],
+    "desc": "Whisper STT + Ollama reasoning + Bark TTS — a local voice assistant for Linux, no cloud API keys required.",
+    "link": null,
+    "github": "https://github.com/itsDigvijaysing/AI_Linux_Assistant",
+    "private": false,
+    "overview": "Local conversational voice agent: Whisper transcription, Ollama LLM, Suno Bark synthesis. LangChain memory, YAML config, structured logging. Typical latency 5–12s on consumer hardware.",
+    "highlights": [
+      "Zero cloud API dependency",
+      "LangChain conversation memory",
+      "YAML-driven configuration"
+    ],
+    "techStack": ["Python", "Whisper", "Ollama", "Bark", "LangChain"]
+  },
+  {
+    "title": "MessMenu App",
+    "subtitle": "Campus Food Discovery",
+    "slug": "messmenu-app",
+    "date": "2023-05",
+    "featured": false,
+    "tags": ["Mobile", "Azure", "Full Stack"],
+    "desc": "React Native app for discovering nearby mess menus — deployed on Azure with CI/CD.",
+    "link": null,
+    "github": "https://github.com/itsDigvijaysing/MessMenu",
+    "private": false,
+    "overview": "Hybrid app for students to browse nearby mess and tiffin services, view daily menus, and place orders. Containerized and deployed to Azure App Service during Microsoft Future Ready Talent internship.",
+    "highlights": [
+      "React Native + Node.js on Azure",
+      "Azure App Service with CI/CD pipelines",
+      "MongoDB + Blob Storage backend"
+    ],
+    "techStack": ["React Native", "Node.js", "Azure", "MongoDB", "CI/CD"]
+  },
+  {
+    "title": "GNOME Stage Manager",
+    "subtitle": "macOS-style Window Management for GNOME",
+    "slug": "gnome-stage-manager",
+    "date": "2026-03",
+    "featured": true,
+    "tags": ["Desktop", "GNOME", "JavaScript"],
+    "desc": "GNOME Shell extension with Stage Manager-style window grouping and 3D sidebar thumbnails.",
+    "link": null,
+    "github": "https://github.com/itsDigvijaysing/gnome-stage-manager",
+    "private": false,
+    "overview": "GNOME Shell extension (45–50) bringing macOS Stage Manager organization to Linux. Groups, Apps, and Workspaces modes with live hover previews and configurable sidebar.",
+    "highlights": [
+      "Wayland and X11 support",
+      "3D perspective sidebar with hover previews",
+      "Installable via GNOME Extensions"
+    ],
+    "techStack": ["JavaScript", "GJS", "GNOME Shell", "Clutter", "CSS"]
+  },
+  {
+    "title": "Nexus Bots",
+    "subtitle": "Agentic Routing for Robotics Commerce",
+    "slug": "nexus-bots",
+    "date": "2026-04",
+    "featured": false,
+    "tags": ["AI", "Agents", "Full Stack"],
+    "desc": "Dual-model architecture — Qwen3-0.6B tool routing + SARVAM-M multilingual responses.",
+    "link": null,
+    "github": "https://github.com/itsDigvijaysing/NexusBots-TDL-Project",
+    "private": false,
+    "overview": "IIT Hyderabad course project. Compact local Qwen3 handles tool selection; SARVAM-M generates responses in English, Hindi, or Telugu. Enhanced prompting achieved 0.79 tool accuracy without fine-tuning.",
+    "highlights": [
+      "0.79 tool accuracy with contrastive few-shot prompting",
+      "Voice input via Web Speech API",
+      "Outperformed QLoRA fine-tuned variants (best 0.51)"
+    ],
+    "techStack": ["Qwen3-0.6B", "SARVAM-M", "React", "Node.js", "SQLite"]
+  },
+  {
+    "title": "Salesforce Apex Code Fixer",
+    "subtitle": "Automated Security Vulnerability Remediation",
+    "slug": "salesforce-apex-code-fixer",
+    "date": "2023-08",
+    "featured": false,
+    "tags": ["Salesforce", "Security", "Full Stack"],
+    "desc": "Flask + React tool auto-fixing SOQL injection, FLS/CRUD violations, and debug leaks in Apex.",
+    "link": null,
+    "github": "https://github.com/itsDigvijaysing/SF_Security_Issue_Fixer",
+    "private": false,
+    "overview": "Built at Cognizant to automate Apex security remediation. Parses SOQL, enforces USER_MODE FLS, pre-checks CRUD on DML, applies sharing settings, and strips debug statements.",
+    "highlights": [
+      "SOQL injection and FLS/CRUD auto-fix",
+      "Downloadable patched output",
+      "Reduced manual security review cycles"
+    ],
+    "techStack": ["Flask", "React", "Salesforce Apex", "SOQL Analysis"]
+  },
+  {
+    "title": "Image Generator",
+    "subtitle": "Stable Diffusion Web App",
+    "slug": "image-generator",
+    "date": "2024-01",
+    "featured": false,
+    "tags": ["AI", "Full Stack"],
+    "desc": "React + Django web app for text-to-image generation with Stable Diffusion.",
+    "link": null,
+    "github": "https://github.com/itsDigvijaysing/Image_Generator_WebApp",
+    "private": false,
+    "overview": "Full-stack image generation web application pairing a React frontend with Django backend and Stable Diffusion inference.",
+    "highlights": ["React frontend", "Django API backend", "Stable Diffusion integration"],
+    "techStack": ["React", "Django", "Stable Diffusion", "Python"]
+  },
+  {
+    "title": "Shooting Competition",
+    "subtitle": "Event Management Platform",
+    "slug": "shooting-competition",
+    "date": "2023-06",
+    "featured": false,
+    "tags": ["Web", "Full Stack"],
+    "desc": "React + Node.js + MySQL platform for managing shooting competition events.",
+    "link": null,
+    "github": "https://github.com/itsDigvijaysing/shooting_competition",
+    "private": false,
+    "overview": "Web application for registering participants, tracking scores, and managing shooting competition events.",
+    "highlights": ["React frontend", "Node.js REST API", "MySQL database"],
+    "techStack": ["React", "Node.js", "MySQL"]
+  },
+  {
+    "title": "Leave Management System",
+    "subtitle": "Salesforce LWC Application",
+    "slug": "leave-management",
+    "date": "2023-03",
+    "featured": false,
+    "tags": ["Salesforce", "LWC"],
+    "desc": "Salesforce Lightning Web Component app for employee leave requests and approvals.",
+    "link": null,
+    "github": "https://github.com/itsDigvijaysing/Leave-Management-System-Salesforce",
+    "private": false,
+    "overview": "Enterprise leave management built with Lightning Web Components and Apex on Salesforce platform.",
+    "highlights": ["LWC components", "Apex triggers and classes", "Approval workflows"],
+    "techStack": ["Salesforce LWC", "Apex", "Lightning Design System"]
+  },
+  {
+    "title": "Groceries Recommendation",
+    "subtitle": "ML-Based Product Recommendations",
+    "slug": "groceries-recommendation",
+    "date": "2022-08",
+    "featured": false,
+    "tags": ["ML", "Python"],
+    "desc": "Python ML system for grocery product recommendations using collaborative filtering.",
+    "link": null,
+    "github": "https://github.com/itsDigvijaysing/Groceries-Recommendation",
+    "private": false,
+    "overview": "Machine learning recommendation engine for grocery products built in Python with Jupyter notebooks.",
+    "highlights": ["Collaborative filtering", "Jupyter analysis pipeline"],
+    "techStack": ["Python", "Scikit-learn", "Pandas", "Jupyter"]
+  }
+];
