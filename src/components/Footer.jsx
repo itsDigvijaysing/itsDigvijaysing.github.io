@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="site-footer">
       <div className="container">
-        <p>© 2026 Digvijaysing Rajput · Pune, India</p>
+        <p>© 2026 Digvijaysing Rajput · India</p>
         <ul className="footer-links">
           <li>
             <Link to="/about">About</Link>

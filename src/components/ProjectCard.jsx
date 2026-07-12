@@ -14,7 +14,7 @@ export default function ProjectCard({ p }) {
       <div className="project-card__sub">{p.subtitle}</div>
       <p>{p.desc}</p>
       <div className="project-card__footer">
-        <span>View project →</span>
+        <span>View project ›</span>
       </div>
     </Link>
   );

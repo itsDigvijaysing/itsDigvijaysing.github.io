@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import Reveal from '../components/Reveal.jsx';
+import Workflow from '../components/Workflow.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { getProject } from '../data/projects.js';
 
@@ -31,18 +32,32 @@ export default function ProjectDetail() {
     <section className="page-top">
       <div className="container">
         <Link className="back-link" to="/projects">
-          ← All projects
+          ‹ All projects
         </Link>
 
         <Reveal>
           <div className="project-cover">
-            <span className="project-cover__sigil" aria-hidden="true">
-              {p.title.charAt(0)}
-            </span>
             <div className="project-cover__body">
               <span className="project-cover__tags">{(p.tags || []).join(' · ')}</span>
               <h1 className="project-cover__title">{p.title}</h1>
             </div>
+            {(p.link || p.github || p.private) && (
+              <div className="project-cover__actions">
+                {p.link && (
+                  <a className="btn btn--cover" href={p.link} target="_blank" rel="noopener noreferrer">
+                    {p.linkLabel || 'Live'} ›
+                  </a>
+                )}
+                {p.github && (
+                  <a className="btn btn--cover" href={p.github} target="_blank" rel="noopener noreferrer">
+                    GitHub ›
+                  </a>
+                )}
+                {p.private && !p.github && !p.link && (
+                  <span className="project-cover__badge">Private</span>
+                )}
+              </div>
+            )}
           </div>
         </Reveal>
 
@@ -82,28 +97,7 @@ export default function ProjectDetail() {
             </div>
             <aside>
               <div className="sidebar-card">
-                <h3>Links</h3>
-                <div className="stack">
-                  {p.link && (
-                    <a className="btn btn--primary" href={p.link} target="_blank" rel="noopener noreferrer">
-                      {p.linkLabel || 'Visit'} ↗
-                    </a>
-                  )}
-                  {p.github && (
-                    <a className="btn btn--ghost" href={p.github} target="_blank" rel="noopener noreferrer">
-                      GitHub ↗
-                    </a>
-                  )}
-                  {p.private && !p.github && (
-                    <span className="btn btn--ghost" style={{ opacity: 0.6, cursor: 'default' }}>
-                      Private repository
-                    </span>
-                  )}
-                  {!p.link && !p.github && !p.private && (
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>No public links</p>
-                  )}
-                </div>
-                <h3 style={{ marginTop: '1.5rem' }}>Tech Stack</h3>
+                <h3>Tech Stack</h3>
                 <div className="skills-grid" style={{ marginTop: '0.5rem' }}>
                   {(p.techStack || []).map((t) => (
                     <span className="skill-pill" key={t}>
@@ -114,6 +108,16 @@ export default function ProjectDetail() {
               </div>
             </aside>
           </div>
+
+          {p.workflow?.rows?.length > 0 && (
+            <Reveal className="project-workflow">
+              <h2>Workflow</h2>
+              <p className="project-workflow__intro">
+                How it works, straight from the code — click the diagram to open it full-screen and zoom.
+              </p>
+              <Workflow data={p.workflow} title={p.title} />
+            </Reveal>
+          )}
         </div>
       </div>
     </section>

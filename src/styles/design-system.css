@@ -18,6 +18,10 @@
   --slab: linear-gradient(115deg, #2b32b2 0%, #3f57d8 45%, #1488cc 100%);
   --shadow: 0 1px 3px rgba(18, 35, 61, 0.07), 0 1px 2px rgba(18, 35, 61, 0.05);
   --shadow-hover: 0 14px 32px rgba(18, 35, 61, 0.13);
+  /* Frosted glass (proven backdrop-filter; falls back to solid --bg-card where unsupported) */
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-blur: blur(16px) saturate(1.4);
+  --glass-border: rgba(255, 255, 255, 0.65);
   --radius: 12px;
   --radius-lg: 20px;
   --nav-h: 4.25rem;
@@ -108,30 +112,6 @@ body::after {
   font-weight: 400;
   letter-spacing: 0;
   color: var(--accent-2);
-}
-
-/* Mono section index: "01 —  SELECTED WORK" */
-.section-index {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.6rem;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 0.75rem;
-}
-.section-index__n { color: var(--accent-2); font-weight: 700; }
-.section-index__n::after {
-  content: '';
-  display: inline-block;
-  width: 1.5rem;
-  height: 1px;
-  margin: 0 0.1rem 0.22em 0.55rem;
-  background: var(--border-strong);
-  vertical-align: middle;
 }
 
 @media (prefers-reduced-motion: reduce) {

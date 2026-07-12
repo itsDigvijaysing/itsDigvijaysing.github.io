@@ -1,6 +1,9 @@
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { gsap } from 'gsap';
+import { SplitText } from 'gsap/SplitText';
+import { useGSAP } from '@gsap/react';
 import ParticleWeb from '../components/ParticleWeb.jsx';
-import Magnetic from '../components/Magnetic.jsx';
 import Reveal from '../components/Reveal.jsx';
 import CountUp from '../components/CountUp.jsx';
 import RotatingText from '../components/RotatingText.jsx';
@@ -9,6 +12,8 @@ import ProjectCard from '../components/ProjectCard.jsx';
 import SocialLinks from '../components/SocialIcons.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
 import { featuredProjects } from '../data/projects.js';
+
+gsap.registerPlugin(useGSAP, SplitText);
 
 const roles = [
   'AI Researcher & Full-Stack Developer',
@@ -40,6 +45,9 @@ const focus = [
 ];
 
 export default function Home() {
+  const heroRef = useRef(null);
+  const titleRef = useRef(null);
+
   usePageMeta({
     title: 'Digvijaysing Rajput — AI & Full-Stack Developer',
     description:
@@ -47,9 +55,31 @@ export default function Home() {
     path: '/',
   });
 
+  // Battle-tested GSAP SplitText intro on the hero heading. Chars fade in AS
+  // they settle (opacity tied to the transform) so the white letters never
+  // read as "flying off" their gradient slabs. Skipped for reduced-motion;
+  // useGSAP reverts both the tween and the SplitText DOM split on unmount.
+  useGSAP(
+    () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const split = SplitText.create(titleRef.current, { type: 'chars', charsClass: 'hero__char' });
+      gsap.from(split.chars, {
+        opacity: 0,
+        yPercent: 60,
+        rotationX: -70,
+        transformOrigin: '50% 100%',
+        stagger: 0.025,
+        duration: 0.6,
+        ease: 'power3.out',
+        delay: 0.15,
+      });
+    },
+    { scope: heroRef },
+  );
+
   return (
     <>
-      <header className="hero">
+      <header className="hero" ref={heroRef}>
         <div className="hero__bg">
           <div className="hero__grid" />
           <ParticleWeb />
@@ -61,31 +91,30 @@ export default function Home() {
             src="/assets/img/self.jpg"
             alt="Digvijaysing Rajput"
             className="hero__photo"
-            width="156"
-            height="156"
+            width="200"
+            height="250"
           />
           <div>
             <p className="hero__eyebrow">
               <RotatingText items={roles} />
             </p>
-            <h1 className="hero__title">
+            <h1 className="hero__title" ref={titleRef}>
               <span className="hero__hl">Digvijaysing</span> <span className="hero__hl">Rajput</span>
             </h1>
             <p className="hero__lead">
-              I build AI that <em className="serif">ships</em> — fine-tuned web agents, conversational
-              platforms, and research taken from paper to production.
+              I like building AI that actually <em className="serif">ships</em>. Lately that&rsquo;s meant
+              fine-tuning web agents at Samsung, building multi-channel conversational platforms, and
+              taking research through to production.
             </p>
             <div className="hero__actions">
-              <Magnetic>
-                <Link className="btn btn--primary" to="/projects">
-                  View Projects
-                </Link>
-              </Magnetic>
+              <Link className="btn btn--ghost" to="/projects">
+                View Projects
+              </Link>
               <Link className="btn btn--ghost" to="/about">
                 About Me
               </Link>
               <a
-                className="btn btn--ghost"
+                className="btn btn--primary"
                 href="/assets/resume/Resume_final.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -121,7 +150,7 @@ export default function Home() {
             <h2>
               Focus <span className="serif">areas</span>
             </h2>
-            <p>From research prototypes to production systems — the work spans three connected tracks.</p>
+            <p>Most of my work falls into these three areas.</p>
           </Reveal>
           <div className="focus-grid">
             {focus.map((f, i) => (
@@ -144,7 +173,7 @@ export default function Home() {
             <h2>
               Featured <span className="serif">projects</span>
             </h2>
-            <p>AI agents, conversational platforms, and products — from production deployments to shipped apps.</p>
+            <p>A few things I&rsquo;ve built and shipped, from production AI to side projects.</p>
           </Reveal>
           <div className="project-grid">
             {featuredProjects.map((p, i) => (
@@ -155,7 +184,7 @@ export default function Home() {
           </div>
           <Reveal style={{ textAlign: 'center', marginTop: '2.5rem' }}>
             <Link className="btn btn--ghost" to="/projects">
-              View all projects →
+              View all projects ›
             </Link>
           </Reveal>
         </div>

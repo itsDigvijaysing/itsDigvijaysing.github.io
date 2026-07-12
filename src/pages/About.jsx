@@ -19,9 +19,10 @@ export default function About() {
               Background &amp; <span className="serif">Experience</span>
             </h1>
             <p>
-              M.Tech in Computer Science at IIT Hyderabad (NIS Teaching Assistant), specializing in AI,
-              web agents, and full-stack systems. Previously AI Research Intern at Samsung SRIB and
-              Salesforce Developer at Cognizant.
+              I&rsquo;m doing my M.Tech in Computer Science at IIT Hyderabad, where I also work as a
+              Teaching Assistant. Most of my time goes into applied AI: fine-tuning LLMs and VLMs, building
+              web agents, and RAG systems. Before this I spent four years across AI research, enterprise
+              Salesforce, and cloud, and I still build open-source desktop and developer tools on the side.
             </p>
           </Reveal>
 
@@ -35,9 +36,9 @@ export default function About() {
                     <h3>AI Research Intern</h3>
                     <p className="timeline-item__org">Samsung Research Institute Bangalore (SRIB)</p>
                     <ul>
-                      <li>Fine-tuned Web Agent models, improving task success rate by 400% and workflow reliability.</li>
-                      <li>Optimized Web Agent Framework, reducing token payload size by 40% and inference latency.</li>
-                      <li>Implemented model evaluation &amp; benchmarking pipeline for reproducible results.</li>
+                      <li>Fine-tuned web-agent models, lifting task success rate roughly 4× with steadier workflows.</li>
+                      <li>Reworked the agent framework to cut token payload ~40%, lowering latency and cost.</li>
+                      <li>Stood up a reproducible evaluation and benchmarking pipeline.</li>
                     </ul>
                   </div>
                 </div>
@@ -45,11 +46,11 @@ export default function About() {
                   <div className="timeline-item__date">Jul 2022 – Jul 2024</div>
                   <div>
                     <h3>Salesforce Developer</h3>
-                    <p className="timeline-item__org">Cognizant Technology Solutions, Pune</p>
+                    <p className="timeline-item__org">Cognizant Technology Solutions</p>
                     <ul>
-                      <li>Developed enterprise Salesforce solutions with governance-compliant configurations.</li>
-                      <li>Integrated Einstein AI for lead scoring and case assignment — 40% manual effort reduction.</li>
-                      <li>Refactored legacy codebase from 60K to 35K lines.</li>
+                      <li>Delivered governance-compliant enterprise Salesforce solutions.</li>
+                      <li>Added Einstein AI lead scoring and case routing, cutting manual effort ~40%.</li>
+                      <li>Refactored a legacy codebase from ~60K to ~35K lines.</li>
                     </ul>
                   </div>
                 </div>
@@ -59,8 +60,8 @@ export default function About() {
                     <h3>Cloud &amp; DevOps Intern</h3>
                     <p className="timeline-item__org">Microsoft Future Ready Talent (Remote)</p>
                     <ul>
-                      <li>Containerized and deployed Mess Menu React app to Azure App Service with CI/CD.</li>
-                      <li>Implemented end-to-end CI/CD in Azure DevOps.</li>
+                      <li>Containerized a React app onto Azure App Service with end-to-end CI/CD.</li>
+                      <li>Automated the release pipeline in Azure DevOps.</li>
                     </ul>
                   </div>
                 </div>
@@ -113,20 +114,20 @@ export default function About() {
                   <div className="timeline-item__date">2025 – Present</div>
                   <div>
                     <h3>Adversarial Robustness in Florence-2 VLM</h3>
-                    <p className="timeline-item__org">IEEE APSCON 2026 — Accepted</p>
+                    <p className="timeline-item__org">IEEE APSCON 2026 · Accepted</p>
                     <ul>
-                      <li>Defense strategies for object detection under PGD/FGSM without model fine-tuning.</li>
-                      <li>30% performance recovery via input- and feature-level transformations.</li>
+                      <li>Retraining-free defense for object detection under FGSM/PGD attacks.</li>
+                      <li>Recovered ~30% performance via input- and feature-level transforms.</li>
                     </ul>
                   </div>
                 </div>
                 <div className="timeline-item">
                   <div className="timeline-item__date">2025 – Present</div>
                   <div>
-                    <h3>Assumption-Free Class Incremental Learning (AFCIL)</h3>
+                    <h3>Assumption-Free Class Incremental Learning</h3>
                     <p className="timeline-item__org">IIT Hyderabad</p>
                     <ul>
-                      <li>Dynamic Embedding Shift strategy with lightweight adapters on CIFAR-100 / ImageNet.</li>
+                      <li>Dynamic embedding-shift with lightweight adapters on CIFAR-100 / ImageNet.</li>
                     </ul>
                   </div>
                 </div>
@@ -174,11 +175,9 @@ export default function About() {
                   <div>
                     <h3>Salesforce</h3>
                     <ul>
-                      <li>Certified Administrator &amp; AI Associate</li>
                       <li>Platform Developer I &amp; II</li>
-                      <li>JavaScript Developer I</li>
-                      <li>Process Automation Accredited Professional</li>
-                      <li>Copado Certification I &amp; II</li>
+                      <li>Certified Administrator &amp; AI Associate</li>
+                      <li>JavaScript Developer I · Process Automation · Copado I &amp; II</li>
                     </ul>
                   </div>
                 </div>
@@ -186,7 +185,7 @@ export default function About() {
                   <div>
                     <h3>Cloud</h3>
                     <ul>
-                      <li>Microsoft Certified Azure Fundamentals (AZ-900)</li>
+                      <li>Microsoft Certified: Azure Fundamentals (AZ-900)</li>
                     </ul>
                   </div>
                 </div>
@@ -199,12 +198,9 @@ export default function About() {
                 <div className="timeline-item" style={{ gridTemplateColumns: '1fr' }}>
                   <div>
                     <ul>
-                      <li>Winner — ET Campus Star (Economic Times)</li>
-                      <li>1st Place — AI Ideathon, Innovation Elan n Vision, Dev Duel (IIT Hyderabad)</li>
-                      <li>2nd Place — Pulse Quest Hackathon (IIT Hyderabad)</li>
-                      <li>Placement Coordinator — IIT Hyderabad</li>
-                      <li>Coordinator, Epoch Club — ML/DL sessions</li>
-                      <li>Hospitality Coordinator, SPICMACAY — IITH</li>
+                      <li>Winner: ET Campus Star (Economic Times)</li>
+                      <li>1st place: AI Ideathon, Innovation Elan &amp; Dev Duel (IIT Hyderabad)</li>
+                      <li>2nd place: Pulse Quest Hackathon (IIT Hyderabad)</li>
                     </ul>
                   </div>
                 </div>
@@ -221,7 +217,7 @@ export default function About() {
               <h2>
                 Let&rsquo;s build something <span className="serif">together</span>.
               </h2>
-              <p>itsDigvijaysing@gmail.com · cs24mtech14020@iith.ac.in · Pune, Maharashtra</p>
+              <p>itsDigvijaysing@gmail.com · cs24mtech14020@iith.ac.in · India</p>
             </div>
             <a className="btn btn--primary" href="/assets/resume/Resume_final.pdf" target="_blank" rel="noopener noreferrer">
               Download Full Resume
