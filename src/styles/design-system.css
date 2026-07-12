@@ -1,4 +1,4 @@
-/* Digvijaysing Portfolio — design system (Vite + React) */
+/* Digvijaysing Portfolio - design system (Vite + React) */
 
 :root {
   --bg: #f5f8fd;
@@ -74,7 +74,7 @@ body::after {
 }
 /* Only reveal outlines for keyboard users; pointer clicks stay clean. */
 :focus:not(:focus-visible) { outline: none; }
-/* <main> is a programmatic focus target for route changes — never ring it. */
+/* <main> is a programmatic focus target for route changes - never ring it. */
 #main-content:focus, #main-content:focus-visible { outline: none; }
 
 ::selection { background: rgba(39, 64, 182, 0.16); color: var(--text); }
@@ -105,7 +105,7 @@ body::after {
 .skip-link:focus { transform: translateY(0); color: #fff; }
 
 /* ── Editorial primitives (adapted from the MagiTech reference) ── */
-/* Serif-italic accent — one deliberate touch per view */
+/* Serif-italic accent - one deliberate touch per view */
 .serif {
   font-family: var(--font-serif);
   font-style: italic;

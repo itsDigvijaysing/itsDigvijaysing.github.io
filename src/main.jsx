@@ -2,7 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
-// Latin-only subsets — the app is English, so we skip the cyrillic/greek/
+// Latin-only subsets - the app is English, so we skip the cyrillic/greek/
 // vietnamese/latin-ext files @fontsource ships by default (dozens of woff2).
 import '@fontsource/inter/latin-400.css';
 import '@fontsource/inter/latin-500.css';

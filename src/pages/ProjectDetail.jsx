@@ -9,7 +9,7 @@ export default function ProjectDetail() {
   const p = getProject(slug);
 
   usePageMeta({
-    title: p ? `${p.title} — Digvijaysing Rajput` : 'Project not found — Digvijaysing Rajput',
+    title: p ? `${p.title} - Digvijaysing Rajput` : 'Project not found - Digvijaysing Rajput',
     description: p ? p.overview || p.desc : 'The project you are looking for could not be found.',
     path: p ? `/projects/${p.slug}` : '/projects',
   });
@@ -66,7 +66,7 @@ export default function ProjectDetail() {
           <div className="project-facts">
             <div>
               <span className="project-facts__label">Focus</span>
-              <span className="project-facts__val">{(p.tags || [])[0] || '—'}</span>
+              <span className="project-facts__val">{(p.tags || [])[0] || '-'}</span>
             </div>
             <div>
               <span className="project-facts__label">Stack</span>
@@ -113,7 +113,7 @@ export default function ProjectDetail() {
             <Reveal className="project-workflow">
               <h2>Workflow</h2>
               <p className="project-workflow__intro">
-                How it works, straight from the code — click the diagram to open it full-screen and zoom.
+                How it works, straight from the code - click the diagram to open it full-screen and zoom.
               </p>
               <Workflow data={p.workflow} title={p.title} />
             </Reveal>

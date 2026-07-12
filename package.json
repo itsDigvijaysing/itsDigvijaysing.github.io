@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Personal portfolio of Digvijaysing Rajput — Vite + React, deployed to GitHub Pages.",
+  "description": "Personal portfolio of Digvijaysing Rajput - Vite + React, deployed to GitHub Pages.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

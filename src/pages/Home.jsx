@@ -23,8 +23,8 @@ const roles = [
 ];
 
 const stats = [
-  { value: 3, decimals: 0, suffix: '+', label: 'Years Industry Experience · AI, Salesforce, Cloud' },
-  { value: 1, decimals: 0, suffix: '', label: 'Accepted Research Paper · IEEE APSCON 2026' },
+  { value: 2, decimals: 0, suffix: '+', label: 'Years Industry Experience' },
+  { value: 2, decimals: 0, suffix: '', label: 'Accepted Research Paper' },
   { value: 9.02, decimals: 2, suffix: '', label: 'M.Tech CGPA · IIT Hyderabad' },
   { value: 9.15, decimals: 2, suffix: '', label: 'B.E. CGPA · NBN Sinhgad, SPPU' },
 ];
@@ -49,9 +49,9 @@ export default function Home() {
   const titleRef = useRef(null);
 
   usePageMeta({
-    title: 'Digvijaysing Rajput — AI & Full-Stack Developer',
+    title: 'Digvijaysing Rajput',
     description:
-      'Portfolio of Digvijaysing Rajput — M.Tech CS at IIT Hyderabad, former AI Research Intern at Samsung SRIB. Conversational AI, web agents, RAG and full-stack products.',
+      'Portfolio of Digvijaysing Rajput - M.Tech CS at IIT Hyderabad, former AI Research Intern at Samsung SRIB. Conversational AI, web agents, RAG and full-stack products.',
     path: '/',
   });
 
@@ -115,7 +115,7 @@ export default function Home() {
               </Link>
               <a
                 className="btn btn--primary"
-                href="/assets/resume/Resume_final.pdf"
+                href="/assets/resume/Digvijaysing_RESUME.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
               >

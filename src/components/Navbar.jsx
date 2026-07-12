@@ -81,7 +81,7 @@ export default function Navbar() {
           </li>
           <li>
             <a
-              href="/assets/resume/Resume_final.pdf"
+              href="/assets/resume/Digvijaysing_RESUME.pdf"
               className="cta"
               target="_blank"
               rel="noopener noreferrer"

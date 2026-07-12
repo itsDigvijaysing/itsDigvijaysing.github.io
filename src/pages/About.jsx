@@ -3,9 +3,9 @@ import usePageMeta from '../hooks/usePageMeta.js';
 
 export default function About() {
   usePageMeta({
-    title: 'About — Digvijaysing Rajput',
+    title: 'About',
     description:
-      'Background, experience, education, research, skills and certifications of Digvijaysing Rajput — M.Tech CS at IIT Hyderabad, former AI Research Intern at Samsung SRIB.',
+      'Background, experience, education, research, skills and certifications of Digvijaysing Rajput - M.Tech CS at IIT Hyderabad, former AI Research Intern at Samsung SRIB.',
     path: '/about',
   });
 
@@ -75,7 +75,7 @@ export default function About() {
                   <div className="timeline-item__date">2024 – 2026</div>
                   <div>
                     <h3>M.Tech Computer Science &amp; Engineering</h3>
-                    <p className="timeline-item__org">IIT Hyderabad · CGPA 9.02 · NIS TA</p>
+                    <p className="timeline-item__org">IIT Hyderabad · CGPA 9.02</p>
                   </div>
                 </div>
                 <div className="timeline-item">
@@ -86,10 +86,17 @@ export default function About() {
                   </div>
                 </div>
                 <div className="timeline-item">
-                  <div className="timeline-item__date">2017 / 2015</div>
+                  <div className="timeline-item__date">2015 – 2017</div>
                   <div>
-                    <h3>HSC &amp; SSC</h3>
-                    <p className="timeline-item__org">Sheth V.K. Shah Vidya Mandir · 74.92% / 88.20%</p>
+                    <h3>HSC</h3>
+                    <p className="timeline-item__org">Sheth V.K. Shah Vidya Mandir · 74.92%</p>
+                  </div>
+                </div>
+              <div className="timeline-item">
+                  <div className="timeline-item__date">2014 – 2015</div>
+                  <div>
+                    <h3>SSC</h3>
+                    <p className="timeline-item__org">Sheth V.K. Shah Vidya Mandir · 88.20%</p>
                   </div>
                 </div>
               </div>
@@ -111,7 +118,7 @@ export default function About() {
               <h3 className="col-label">Research</h3>
               <div className="timeline">
                 <div className="timeline-item">
-                  <div className="timeline-item__date">2025 – Present</div>
+                  <div className="timeline-item__date">2026</div>
                   <div>
                     <h3>Adversarial Robustness in Florence-2 VLM</h3>
                     <p className="timeline-item__org">IEEE APSCON 2026 · Accepted</p>
@@ -122,12 +129,13 @@ export default function About() {
                   </div>
                 </div>
                 <div className="timeline-item">
-                  <div className="timeline-item__date">2025 – Present</div>
+                  <div className="timeline-item__date">2026</div>
                   <div>
-                    <h3>Assumption-Free Class Incremental Learning</h3>
-                    <p className="timeline-item__org">IIT Hyderabad</p>
+                    <h3>DES: Efficient Long-Tailed Exemplar-Free CL on VLM</h3>
+                    <p className="timeline-item__org">IJCAI GLOW 2026 Workshop · Accepted</p>
                     <ul>
-                      <li>Dynamic embedding-shift with lightweight adapters on CIFAR-100 / ImageNet.</li>
+                      <li>Proposed Dynamic Expert Saturation (DES), a two-phase framework for long-tailed, exemplar-free continual learning in vision-language models.</li>
+                      <li>Achieved up to 3.08% higher accuracy than the strongest baseline and 2.5–3.9x faster performance than prompt-based methods on CIFAR100-LT and ImageNet100-LT.</li>
                     </ul>
                   </div>
                 </div>
@@ -219,7 +227,7 @@ export default function About() {
               </h2>
               <p>itsDigvijaysing@gmail.com · cs24mtech14020@iith.ac.in · India</p>
             </div>
-            <a className="btn btn--primary" href="/assets/resume/Resume_final.pdf" target="_blank" rel="noopener noreferrer">
+            <a className="btn btn--primary" href="/assets/resume/Digvijaysing_RESUME.pdf" target="_blank" rel="noopener noreferrer">
               Download Full Resume
             </a>
           </div>

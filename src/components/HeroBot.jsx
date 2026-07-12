@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
-// Transparent greeting mascot. On load — and again on every Home visit (App
-// remounts the page on route change) — the "door" line drops from the top, the
+// Transparent greeting mascot. On load - and again on every Home visit (App
+// remounts the page on route change) - the "door" line drops from the top, the
 // robot comes through and plays the full greeting once, then the whole thing
 // repeats every 30s (the line re-drops each time). Not a continuous loop.
 export default function HeroBot() {

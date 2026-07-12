@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-// Rotating descriptor line — fades between phrases. Visible by default (SSR/first paint safe).
+// Rotating descriptor line - fades between phrases. Visible by default (SSR/first paint safe).
 export default function RotatingText({ items = [], interval = 2800 }) {
   const [i, setI] = useState(0);
   const [visible, setVisible] = useState(true);

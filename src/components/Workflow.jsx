@@ -43,7 +43,7 @@ export function layoutWorkflow(data) {
       let lx;
       let ly;
       if (up) {
-        // Feedback loop — bow out to the right of both nodes.
+        // Feedback loop - bow out to the right of both nodes.
         const sRx = s.x + NW;
         const sRy = s.y + NH / 2;
         const tRx = t.x + NW;

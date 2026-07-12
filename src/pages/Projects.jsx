@@ -11,9 +11,9 @@ export default function Projects() {
   const [filter, setFilter] = useState('all');
 
   usePageMeta({
-    title: 'Projects — Digvijaysing Rajput',
+    title: 'Projects',
     description:
-      'Projects by Digvijaysing Rajput — AI agents, conversational platforms, RAG systems, mobile and desktop apps, and research.',
+      'Projects by Digvijaysing Rajput - AI agents, conversational platforms, RAG systems, mobile and desktop apps, and research.',
     path: '/projects',
   });
 
@@ -27,7 +27,7 @@ export default function Projects() {
           <h1>
             All <span className="serif">Projects</span>
           </h1>
-          <p>AI agents, conversational platforms, RAG systems, mobile apps, and research — filter by area.</p>
+          <p>AI agents, conversational platforms, RAG systems, mobile apps, and research - filter by area.</p>
         </Reveal>
 
         <div className="filter-bar">

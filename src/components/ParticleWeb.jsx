@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 // Lightweight "constellation web" background (canvas, no deps). The web parts /
 // moves AWAY from the cursor (repel) instead of connecting to it. A fresh random
-// network is generated on every mount — i.e. each time Home is visited, since the
+// network is generated on every mount - i.e. each time Home is visited, since the
 // page (and this component) remounts on route change.
 export default function ParticleWeb() {
   const canvasRef = useRef(null);
@@ -48,7 +48,7 @@ export default function ParticleWeb() {
       ctx.clearRect(0, 0, w, h);
 
       // Advance base positions, then compute a display position (rx, ry) that is
-      // pushed AWAY from the cursor — the web opens up / disperses around it and
+      // pushed AWAY from the cursor - the web opens up / disperses around it and
       // reforms as the cursor moves on. The offset is per-frame (not accumulated),
       // so the network never permanently drifts.
       for (const p of points) {
@@ -65,7 +65,7 @@ export default function ParticleWeb() {
         const d = Math.hypot(dx, dy);
         if (d < REPEL && d > 0.001) {
           const f = 1 - d / REPEL;
-          const push = f * f * REPEL_DIST; // eased — strongest right at the cursor
+          const push = f * f * REPEL_DIST; // eased - strongest right at the cursor
           rx += (dx / d) * push;
           ry += (dy / d) * push;
         }
