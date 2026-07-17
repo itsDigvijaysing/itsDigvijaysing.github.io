@@ -70,6 +70,11 @@ export default function Navbar() {
             </NavLink>
           </li>
           <li>
+            <NavLink to="/journey" onClick={close}>
+              Journey
+            </NavLink>
+          </li>
+          <li>
             <NavLink to="/projects" onClick={close}>
               Projects
             </NavLink>

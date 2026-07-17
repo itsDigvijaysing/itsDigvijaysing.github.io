@@ -28,19 +28,19 @@ index.html                 # Vite entry: <div id="root"> + /src/main.jsx; full S
 src/
 ├── main.jsx               # createRoot + BrowserRouter; latin-only @fontsource imports; 2 CSS files
 ├── App.jsx                # skip-link · ScrollToTop · Navbar · <Routes> · Footer; <main> re-keys on route for page-enter anim
-├── pages/                 # Home, About, Projects, ProjectDetail, NotFound
-├── components/            # Navbar, Footer, ScrollToTop, HeroBot, ParticleWeb, Magnetic, Reveal, RotatingText, CountUp, ProjectCard, SocialIcons, Workflow, WorkflowLightbox
+├── pages/                 # Home, About, Journey, Projects, ProjectDetail, NotFound
+├── components/            # Navbar, Footer, ScrollToTop, HeroBot, ParticleWeb, Magnetic, Reveal, RotatingText, CountUp, ProjectCard, SocialIcons, Workflow, WorkflowLightbox, JourneyPath (Journey-page milestone path, scroll-drawn SVG), DotGrid (cursor-spotlight dot lattice; one instance in App.jsx as a fixed backdrop behind interior pages — skipped on Home where ParticleWeb owns that layer; z-index -1, radial edge mask, resting dots near-invisible)
 ├── hooks/usePageMeta.js   # per-route title/description/canonical/OG (patches existing head tags; no react-helmet)
 ├── data/projects.js       # single source of truth (13 projects) + featuredProjects / getProject helpers; each has a `workflow` {caption,rows,edges} driving the SVG diagram + zoom/pan modal on ProjectDetail
 └── styles/                # design-system.css (tokens + primitives) + components.css
 public/                    # copied verbatim to dist root
 ├── assets/img/            # self.jpg, logo.png, og-cover.png, hero_greeting.webm   ← the ONLY runtime images
-├── assets/resume/Resume_final.pdf
+├── assets/resume/Digvijaysing_RESUME.pdf
 ├── robots.txt · sitemap.xml
 .github/workflows/deploy.yml
 ```
 
-**Routes:** `/` `/about` `/projects` `/projects/:slug` `*`. Deep links work because CI writes `404.html = index.html`.
+**Routes:** `/` `/about` `/journey` `/projects` `/projects/:slug` `*`. Deep links work because CI writes `404.html = index.html`.
 
 **Runtime images live in `public/assets/img/` — not the repo-root `assets/`.** Anything the app references via `/assets/...` resolves to `public/`. See the cleanup note below about the root `assets/` tree.
 
@@ -103,6 +103,7 @@ Vite only bundles `src/ + public/ + index.html`, so leftover files never ship to
 
 ### Featured projects (homepage) & skills
 - Featured are `featured:true` in `src/data/projects.js` (currently: LightSpeak AI, Indian Law AI Portal, Stat-Up, Jira Automation Portal, AI Linux Assistant, GNOME Stage Manager).
+- `hidden:true` projects (Salesforce Apex Code Fixer, Shooting Competition, Leave Management System) are collapsed behind a "Show N more" toggle on `/projects` (see `Projects.jsx`) instead of shown directly — basic/coursework-grade work, kept but deprioritized.
 - ML: LLM/VLM Fine-Tuning, Deep Learning, Deep RL, LoRA, RAG, Transformers · Languages: Python, C++, SQL, JavaScript · Web: React, Django, Node, REST · Tools: Git, Docker, Linux, Azure, CI/CD, Hugging Face, PyTorch · Salesforce (legacy): Apex, LWC, Einstein AI.
 - Certifications — Salesforce: Admin, AI Associate, Platform Dev I & II, JS Dev I, Process Automation AP, Copado I & II · Cloud: Microsoft AZ-900.
 

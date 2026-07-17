@@ -19,138 +19,89 @@ const projects = [
     "linkLabel": "Visit Website",
     "github": null,
     "private": false,
-    "overview": "LightSpeak is a multi-tenant B2B platform that embeds voice, chat, and email AI agents into customer products, each answering from the tenant's own uploaded documents. A Django backend is the single brain for text turns: it authenticates the API key, reserves credits, runs hybrid RAG retrieval (pgvector cosine + Postgres BM25, optional Cohere rerank), assembles a persona/opacity system prompt, calls a Groq gpt-oss model, sanitizes any leaked vendor names, then commits usage to a credit wallet and logs the session. Voice is the exception: a self-hosted LiveKit agent worker runs speech-to-text -> LLM -> text-to-speech in-process for low latency, calling Django only for persona, history, and metering. Documents are ingested by parsing, hierarchical chunking, and local EmbeddingGemma vectors stored in pgvector, and an IMAP/SMTP worker triages and answers email through the same RAG orchestrator.",
+    "overview": "LightSpeak lets B2B companies drop a voice, chat, and email AI agent into their product that only answers from that tenant's own documents, so support scales without sacrificing accuracy or leaking data across customers. I built it as a metered, multi-tenant platform from the ground up - a Django backend runs retrieval and billing for every text turn, while a dedicated low-latency worker handles real-time voice.",
     "highlights": [
       "Hybrid RAG: one SQL query blends pgvector cosine (0.7) + Postgres BM25 (0.3), org-scoped for tenant isolation, with optional Cohere rerank and an exact-match FAQ fast-path",
-      "One Django orchestrator per text turn: wallet reserve -> RAG -> persona/opacity prompt -> Groq gpt-oss LLM -> vendor-name sanitizer -> wallet commit; retrieved docs fenced in a per-turn random nonce to resist prompt injection",
-      "Real-time voice worker runs STT->LLM->TTS in-process (LiveKit + Silero VAD + noise cancellation), routing Deepgram/Cartesia for English and Sarvam Saaras/Bulbul for Hindi/Hinglish personas"
+      "One Django orchestrator per text turn: wallet reserve -> RAG -> persona/opacity prompt ->  llm LLM -> vendor-name sanitizer -> wallet commit; retrieved docs fenced in a per-turn random nonce to resist prompt injection",
+      "Real-time voice worker runs STT->LLM->TTS in-process. Django is only called for persona, history, and metering, keeping latency low. Each tenant can upload a unique voice for TTS."
     ],
     "techStack": [
       "Django 5",
       "PostgreSQL + pgvector",
-      "LiveKit Agents",
-      "Groq (gpt-oss LLM)",
-      "Deepgram STT/TTS",
-      "Sarvam & Cartesia voice",
+      "Langchain Agents",
+      "STT/TTS",
+      "Unique voice",
       "EmbeddingGemma embeddings",
       "React 19 + Tailwind"
     ],
     "workflow": {
-      "caption": "Query -> grounded, billed reply",
-      "rows": [
-        [
-          {
-            "id": "A",
-            "label": "Customer query",
-            "kind": "input"
-          }
-        ],
-        [
-          {
-            "id": "B",
-            "label": "Channel?",
-            "kind": "decision"
-          }
-        ],
-        [
-          {
-            "id": "C",
-            "label": "STT: Deepgram/Sarvam",
-            "kind": "step"
-          },
-          {
-            "id": "D",
-            "label": "Auth + wallet reserve",
-            "kind": "step"
-          }
-        ],
-        [
-          {
-            "id": "E",
-            "label": "Hybrid RAG retrieval",
-            "kind": "step"
-          }
-        ],
-        [
-          {
-            "id": "F",
-            "label": "Groq LLM (gpt-oss)",
-            "kind": "model"
-          }
-        ],
-        [
-          {
-            "id": "G",
-            "label": "TTS: aura/Cartesia",
-            "kind": "step"
-          },
-          {
-            "id": "H",
-            "label": "Sanitize + debit",
-            "kind": "step"
-          }
-        ],
-        [
-          {
-            "id": "I",
-            "label": "Customer response",
-            "kind": "output"
-          }
-        ]
-      ],
-      "edges": [
-        {
-          "from": "A",
-          "to": "B"
-        },
-        {
-          "from": "B",
-          "to": "C",
-          "label": "voice"
-        },
-        {
-          "from": "B",
-          "to": "D",
-          "label": "chat/email"
-        },
-        {
-          "from": "C",
-          "to": "F"
-        },
-        {
-          "from": "D",
-          "to": "E"
-        },
-        {
-          "from": "E",
-          "to": "F"
-        },
-        {
-          "from": "F",
-          "to": "G",
-          "label": "voice"
-        },
-        {
-          "from": "F",
-          "to": "H",
-          "label": "text"
-        },
-        {
-          "from": "G",
-          "to": "I"
-        },
-        {
-          "from": "H",
-          "to": "I"
-        },
-        {
-          "from": "I",
-          "to": "A",
-          "label": "history",
-          "back": true
-        }
-      ]
-    }
+  "caption": "Multi-channel query → grounded, billed reply (8-stage LightSpeak Core)",
+  "rows": [
+    [
+      { "id": "A", "label": "Customer query", "kind": "input" }
+    ],
+    [
+      { "id": "B", "label": "Channel?", "kind": "decision" }
+    ],
+    [
+      { "id": "C1", "label": "WhatsApp webhook", "kind": "step" },
+      { "id": "C2", "label": "STT · Tuned Model", "kind": "step" },
+      { "id": "C3", "label": "Chat / Email ingest", "kind": "step" }
+    ],
+    [
+      { "id": "S1", "label": "① Tenant auth + resolve", "kind": "step" }
+    ],
+    [
+      { "id": "S2", "label": "② Wallet pre-flight reserve", "kind": "step" }
+    ],
+    [
+      { "id": "S3", "label": "③ Knowledge Engine · Hybrid RAG (per tenant)", "kind": "step" }
+    ],
+    [
+      { "id": "S4", "label": "④ Persona / tone + opacity assembly", "kind": "step" }
+    ],
+    [
+      { "id": "S5", "label": "⑤ Reasoning Engine · LLM", "kind": "model" }
+    ],
+    [
+      { "id": "S6", "label": "⑥ Response sanitiser", "kind": "step" }
+    ],
+    [
+      { "id": "S7", "label": "⑦ Wallet commit + ledger", "kind": "step" }
+    ],
+    [
+      { "id": "S8", "label": "⑧ Memory Vault + message log", "kind": "step" }
+    ],
+    [
+      { "id": "T", "label": "TTS · aura / Cartesia", "kind": "step" },
+      { "id": "R", "label": "Text / Email response", "kind": "step" }
+    ],
+    [
+      { "id": "Z", "label": "Customer response", "kind": "output" }
+    ]
+  ],
+  "edges": [
+    { "from": "A", "to": "B" },
+    { "from": "B", "to": "C1", "label": "whatsapp" },
+    { "from": "B", "to": "C2", "label": "voice" },
+    { "from": "B", "to": "C3", "label": "chat / email" },
+    { "from": "C1", "to": "S1" },
+    { "from": "C2", "to": "S1" },
+    { "from": "C3", "to": "S1" },
+    { "from": "S1", "to": "S2" },
+    { "from": "S2", "to": "S3" },
+    { "from": "S3", "to": "S4" },
+    { "from": "S4", "to": "S5" },
+    { "from": "S5", "to": "S6" },
+    { "from": "S6", "to": "S7" },
+    { "from": "S7", "to": "S8" },
+    { "from": "S8", "to": "T", "label": "voice" },
+    { "from": "S8", "to": "R", "label": "text" },
+    { "from": "T", "to": "Z" },
+    { "from": "R", "to": "Z" },
+    { "from": "Z", "to": "A", "label": "history", "back": true }
+  ]
+}
   },
   {
     "title": "Indian Law AI Portal",
@@ -167,7 +118,7 @@ const projects = [
     "link": null,
     "github": "https://github.com/itsDigvijaysing/Indian-Law-AI-Portal",
     "private": false,
-    "overview": "A FastAPI + React RAG portal that answers Indian-law questions grounded strictly in 25 official statute PDFs (Constitution plus the criminal, civil, personal, commercial, digital and labour codes), with no internet sources at runtime. A deterministic keyword classifier first routes each question to its legal category, then hybrid retrieval (dense FAISS over bge-small embeddings + BM25 keyword + exact section-label lookup, fused with reciprocal-rank fusion and reranked by a CrossEncoder) pulls the top passages, which are numbered and handed to one of ten config-driven domain agents. The selected agent builds one shared grounded prompt for Groq's Llama 3.3 70B (or Google Gemini), and every inline [n] citation is validated against the source list, confidence is scored from citations, and off-corpus questions get an explicit refusal instead of a hallucinated answer. Criminal, procedure and evidence answers surface both the current BNS/BNSS/BSA 2023 provisions and the legacy IPC/CrPC/Evidence-Act ones around the 1 July 2024 cut-over.",
+    "overview": "Legal information in India is scattered across dozens of statutes, and most AI tools either hallucinate citations or answer from unreliable web sources. I built a RAG portal that only answers from 25 official statute PDFs, routes each question to the right legal domain, and refuses to answer anything it can't ground and cite - trading breadth for something closer to trustworthy.",
     "highlights": [
       "Two-stage router: a deterministic keyword classifier picks the legal category, then retrieval is soft-boosted (25% lift, never hard-excluded) to that category's statutes plus linked codes, keeping recall for cross-cutting queries.",
       "Hybrid retrieval fuses dense FAISS (bge-small, 9,487 chunks over 25 statutes) with BM25 keyword and exact section-label lookup via reciprocal-rank fusion, then a CrossEncoder reranks the candidate pool.",
@@ -178,7 +129,7 @@ const projects = [
       "React 18",
       "FAISS",
       "Sentence-Transformers",
-      "Groq Llama 3.3 70B",
+      " Groq LLM",
       "Google Gemini",
       "rank_bm25",
       "PyPDF2"
@@ -229,7 +180,7 @@ const projects = [
         [
           {
             "id": "G",
-            "label": "Groq Llama / Gemini",
+            "label": " Llama / Gemini",
             "kind": "model"
           }
         ],
@@ -303,113 +254,205 @@ const projects = [
     "tags": [
       "AI",
       "Agents",
-      "Python"
+      "Python",
+      "RAG"
     ],
-    "desc": "Async Python library that lets LLM agents autonomously browse and act on web pages by driving Chrome over the DevTools Protocol.",
+    "desc": "Async Python library that lets LLM agents autonomously browse and act on web pages over the Chrome DevTools Protocol, with trajectory memory that learns from past runs.",
     "link": null,
     "github": "https://github.com/itsDigvijaysing/web_agents",
     "private": false,
-    "overview": "web-agent is an async Python library (a browser-use derivative) that lets LLM agents complete open-ended web tasks by driving a real Chrome/Chromium browser over the Chrome DevTools Protocol. On each step it captures the page as a serialized DOM plus a CDP accessibility tree and screenshot, sends that to an LLM behind a unified multi-provider interface (Gemini, GPT, Claude, Groq, Ollama, Azure, Bedrock), and receives structured reasoning plus a list of actions to run. An event-bus-driven BrowserSession executes those actions (click, type, scroll, navigate, extract, done) with watchdogs for downloads, popups, security, DOM and crashes, looping until the model emits a 'done' action. It can also run as an MCP server and ships a Jupyter-like code-execution agent.",
+    "overview": "Most browser-automation agents are black boxes that repeat the same mistakes on every run. web-agent is an async Python library that lets an LLM drive a real Chrome browser through an observe-decide-act loop, and - the part I cared about most - it remembers: each run distills into a short lesson that gets retrieved and reused on similar future tasks, so the agent actually improves over time.",
     "highlights": [
       "Per-step perception captures a serialized DOM, CDP accessibility tree, and screenshot, indexing interactive elements for the LLM to reference.",
-      "Unified multi-provider LLM layer (Gemini, GPT, Claude, Groq, Ollama, Azure, Bedrock) returns Pydantic-structured output: thinking, memory, next_goal, and a list of actions.",
-      "Event-driven BrowserSession runs multiple actions per step over CDP with page-change guards and watchdogs (downloads, popups, security, DOM, crash); can also serve as an MCP server."
+      "Trajectory memory (opt-in): after each run the agent summarizes a 'lesson' and appends it to a local JSONL store, then on similar future tasks embeds the task, cosine-ranks past runs, and injects the top lessons as hints - retrieval-augmented, no vector DB, degrading gracefully to storage-only when no embedding provider is available (adapted from Agent S's narrative memory).",
+      "Unified multi-provider LLM layer returns Pydantic-structured output (thinking, memory, next_goal, actions) and auto-resolves whichever provider key is present - any hosted LLM API, or fully local and keyless via Ollama.",
+      "Event-driven BrowserSession runs multiple actions per step over CDP via a bubus event bus coordinating 12 watchdogs (downloads, popups, security, DOM, crash); can also serve as an MCP server and includes a Jupyter-like code agent."
     ],
     "techStack": [
       "Python",
+      "asyncio",
       "Chrome DevTools Protocol (CDP)",
       "cdp-use",
       "Pydantic",
-      "google-genai (Gemini)",
-      "OpenAI / Anthropic",
-      "MCP",
+      "Multi-provider LLM layer",
+      "Ollama (local LLM)",
+      "Embedding retrieval (RAG)",
       "bubus event bus",
-      "asyncio"
+      "MCP"
     ],
     "workflow": {
-      "caption": "Task -> browser actions -> result",
+      "caption": "Agent.run: memory retrieval -> step loop (observe · decide · act) -> memory recording",
       "rows": [
         [
           {
-            "id": "A",
-            "label": "Task + LLM provider",
+            "id": "Start",
+            "label": "Agent.run(task)",
             "kind": "input"
           }
         ],
         [
           {
-            "id": "B",
-            "label": "Launch Chrome (CDP)",
-            "kind": "step"
-          }
-        ],
-        [
-          {
-            "id": "C",
-            "label": "Capture DOM + a11y tree",
-            "kind": "step"
-          }
-        ],
-        [
-          {
-            "id": "D",
-            "label": "LLM plans actions",
-            "kind": "model"
-          }
-        ],
-        [
-          {
-            "id": "E",
-            "label": "Execute actions (CDP)",
-            "kind": "step"
-          }
-        ],
-        [
-          {
-            "id": "F",
-            "label": "Task done?",
+            "id": "Mem",
+            "label": "Trajectory memory enabled?",
             "kind": "decision"
           }
         ],
         [
           {
-            "id": "G",
-            "label": "Final result",
+            "id": "Retr",
+            "label": "Embed task · cosine-search past trajectories",
+            "kind": "step"
+          }
+        ],
+        [
+          {
+            "id": "Inject",
+            "label": "Inject relevant lessons into LLM context",
+            "kind": "step"
+          }
+        ],
+        [
+          {
+            "id": "Obs",
+            "label": "Observe: DOM + a11y tree + screenshot (CDP)",
+            "kind": "step"
+          }
+        ],
+        [
+          {
+            "id": "Ser",
+            "label": "Serialize DOM · index interactive elements",
+            "kind": "step"
+          }
+        ],
+        [
+          {
+            "id": "Msg",
+            "label": "MessageManager builds prompt (+ memory)",
+            "kind": "step"
+          }
+        ],
+        [
+          {
+            "id": "LLM",
+            "label": "LLM decides next actions (AgentOutput)",
+            "kind": "model"
+          }
+        ],
+        [
+          {
+            "id": "Act",
+            "label": "multi_act · Tools · watchdogs · CDP",
+            "kind": "step"
+          }
+        ],
+        [
+          {
+            "id": "Done",
+            "label": "done?",
+            "kind": "decision"
+          }
+        ],
+        [
+          {
+            "id": "Rec",
+            "label": "Memory enabled?",
+            "kind": "decision"
+          }
+        ],
+        [
+          {
+            "id": "Sum",
+            "label": "Summarize run into a lesson (LLM)",
+            "kind": "model"
+          }
+        ],
+        [
+          {
+            "id": "Emb",
+            "label": "Embed + append to trajectories.jsonl",
+            "kind": "step"
+          }
+        ],
+        [
+          {
+            "id": "End",
+            "label": "Return AgentHistoryList",
             "kind": "output"
           }
         ]
       ],
       "edges": [
         {
-          "from": "A",
-          "to": "B"
+          "from": "Start",
+          "to": "Mem"
         },
         {
-          "from": "B",
-          "to": "C"
-        },
-        {
-          "from": "C",
-          "to": "D"
-        },
-        {
-          "from": "D",
-          "to": "E"
-        },
-        {
-          "from": "E",
-          "to": "F"
-        },
-        {
-          "from": "F",
-          "to": "G",
+          "from": "Mem",
+          "to": "Retr",
           "label": "yes"
         },
         {
-          "from": "F",
-          "to": "C",
+          "from": "Mem",
+          "to": "Obs",
+          "label": "no"
+        },
+        {
+          "from": "Retr",
+          "to": "Inject"
+        },
+        {
+          "from": "Inject",
+          "to": "Obs"
+        },
+        {
+          "from": "Obs",
+          "to": "Ser"
+        },
+        {
+          "from": "Ser",
+          "to": "Msg"
+        },
+        {
+          "from": "Msg",
+          "to": "LLM"
+        },
+        {
+          "from": "LLM",
+          "to": "Act"
+        },
+        {
+          "from": "Act",
+          "to": "Done"
+        },
+        {
+          "from": "Done",
+          "to": "Obs",
           "label": "no",
           "back": true
+        },
+        {
+          "from": "Done",
+          "to": "Rec",
+          "label": "yes"
+        },
+        {
+          "from": "Rec",
+          "to": "Sum",
+          "label": "yes"
+        },
+        {
+          "from": "Sum",
+          "to": "Emb"
+        },
+        {
+          "from": "Emb",
+          "to": "End"
+        },
+        {
+          "from": "Rec",
+          "to": "End",
+          "label": "no"
         }
       ]
     }
@@ -429,7 +472,7 @@ const projects = [
     "link": null,
     "github": "https://github.com/itsDigvijaysing/pirvision-classifier-model",
     "private": false,
-    "overview": "Classifies human presence and activity from the PIRvision office dataset, where each sample holds 55 analog PIR sensor readings plus ambient temperature and a timestamp. A preprocessing pipeline imputes missing values, caps PIR outliers using the IQR method, and engineers aggregate and cyclical-time features (69 total) that are then RobustScaler-normalized. The core PyTorch model passes the feature vector through a Conv1d + two-layer LSTM branch and a parallel MLP branch, then merges them with a learnable Softmax gated-fusion before a final 3-class output (vacancy / stationary / motion). It is trained with 5-fold stratified cross-validation and class-weighted cross-entropy, and the best fold is checkpointed to team_35.pth for evaluation on new CSVs.",
+    "overview": "Cheap PIR motion sensors only give a noisy on/off signal, which isn't enough to tell whether a room is empty, someone's sitting still, or there's real movement. I built a hybrid deep-learning model that engineers richer features from the raw readings and classifies activity level with strong accuracy, aimed at smarter occupancy-based building automation.",
     "highlights": [
       "Hybrid architecture: a Conv1d + 2-layer LSTM branch and a parallel MLP branch merged by a learnable Softmax gated-fusion gate before the 3-class classifier.",
       "Engineers 69 features from 55 PIR readings and temperature (IQR outlier capping, PIR mean/std/range/IQR/trend stats, cyclical hour encoding) with a saved RobustScaler.",
@@ -554,7 +597,7 @@ const projects = [
     "link": null,
     "github": "https://github.com/itsDigvijaysing/Stat-Up",
     "private": false,
-    "overview": "Stat-Up is an offline-first Kotlin/Jetpack Compose (Material 3) Android app built on MVVM + Room that gamifies daily productivity as an anime 'status window'. Completing a manual mission or a synced Todoist task awards points that accumulate into six RPG stats (STR/INT/WIS/DEX/CHA/VIT) rendered on a hexagon radar, and feed a points wallet, achievements, and custom rewards. Two WorkManager jobs drive the loop: a 15-minute Todoist sync worker (Ktor) that maps task priority to points and labels to stats with idempotent, dedup-by-externalId awards, and a midnight DecayEngine that raises or lowers rank E to S by streak consistency (Streak Freeze Shields absorb idle days). An optional, opt-in Gemini 2.5 Flash AI coach is gated behind an AES-256-GCM encrypted API key.",
+    "overview": "Task trackers are easy to abandon because finishing a to-do doesn't feel like anything. Stat-Up turns daily tasks and Todoist completions into an anime RPG status window - points level up six stats, consistency raises your rank, and skipping days lets it decay - so the app rewards the habit, not just the checkbox, while staying fully offline and privacy-first.",
     "highlights": [
       "Offline-first RPG engine: task points accumulate into 6 stats shown on a hexagon radar; a midnight DecayEngine raises/lowers rank E->S by streak consistency, with Streak Freeze Shields absorbing idle days.",
       "Todoist integration via a 15-min WorkManager sync worker over Ktor: maps priority->points and labels->stats, awards idempotently keyed by externalId (unique index) so overlapping syncs never double-count.",
@@ -703,7 +746,7 @@ const projects = [
     "link": null,
     "github": "https://github.com/itsDigvijaysing/Jira_Automation_Portal",
     "private": false,
-    "overview": "A full-stack portal (Django REST backend + React/Tailwind SPA) that automates Jira ticket breakdown. From a single free-form requirement, AutomationService creates a parent Jira Task, asks Google Gemini for 3-5 development tasks (JSON-enforced), creates each as a Jira Task linked to the parent, then generates 3-5 test cases per task and files them as sub-tasks. Gemini calls rotate between two API keys with backoff on quota errors and fall back to hardcoded tasks/test cases if the model is unavailable; all Jira reads and writes go through the Jira Cloud REST v3 API.",
+    "overview": "Breaking one requirement into a parent ticket, dev tasks, and test cases in Jira is repetitive busywork every sprint. This portal automates that: type a free-form requirement and an LLM fans it out into a linked Jira ticket tree - parent task, 3-5 dev tasks, and test-case sub-tasks for each - with fallbacks so a flaky AI call never blocks the workflow.",
     "highlights": [
       "One free-form requirement fans out to a parent Jira Task, 3-5 AI dev Tasks (linked via 'Relates'), and 3-5 test-case sub-tasks per task, all created through Jira Cloud REST v3.",
       "Gemini output forced to JSON via response_mime_type with a fence-tolerant parser; dual API-key rotation plus backoff on 429/quota, and hardcoded fallback tasks/test cases when the model is unavailable.",
@@ -843,7 +886,7 @@ const projects = [
     "link": null,
     "github": "https://github.com/itsDigvijaysing/AI_Linux_Assistant",
     "private": false,
-    "overview": "A local-first, Wayland-native voice assistant for Linux, built by vendoring and evolving the dnhkng/GLaDOS engine. A microphone stream is gated by Silero VAD, transcribed by Parakeet ASR (ONNX on CPU), and routed to a qwen3:4b brain running locally through Ollama on the GPU (an optional Groq cloud brain is a drop-in swap); the reply is spoken back via SuperTonic TTS with a Kokoro fallback, keeping the GPU free for the LLM. When the user asks it to do something, the model calls typed MCP tools (13 native desktop actions plus a general shell fallback) through a fail-safe safety gate, and the tool result is fed back to the brain for a spoken summary. A GNOME Shell overlay tracks state and listening mode, and PipeWire echo-cancel enables talk-over barge-in.",
+    "overview": "Most voice assistants need the cloud and can't touch your desktop. This is a fully local, no-API-key voice assistant for Linux - speech in, a local LLM reasons about it, speech out - that can also safely act on your GNOME session (volume, brightness, apps, files) through a permissioned tool layer, so it stays useful offline and never sends what you say anywhere.",
     "highlights": [
       "Fully local, no-API-key pipeline: Parakeet ASR + qwen3:4b (Ollama) + SuperTonic TTS, with the LLM on the GPU and all speech models on CPU as ONNX to fit a 6 GB VRAM budget.",
       "The qwen3 brain acts as a router: it either speaks a reply or calls one of 13 typed desktop tools (brightness, volume, lock, screenshot, open app/link, media, night light, DND, terminal, clipboard...) plus a shell fallback via MCP.",
@@ -983,7 +1026,7 @@ const projects = [
     "link": null,
     "github": "https://github.com/itsDigvijaysing/MessMenu",
     "private": false,
-    "overview": "MessMenu is an Expo/React Native mobile app that lets students browse mess restaurants and tiffin services, viewing each mess's daily menu image, thali and monthly pricing, veg/non-veg tags, parcel availability and contact details. From the Welcome screen the user picks a Customer or Mess Owner path: customers get a searchable listing (filtered to messes flagged online) plus read-only detail and full-image screens, while owners can sign up, log in, and update their mess details, pricing, and menu/profile images. All data flows over REST (apisauce/fetch) to an Azure App Service backend (azappservicebackendfree.azurewebsites.net/messdetails) backed by Azure MongoDB, with images sent as base64 and persisted to Azure Blob Storage. There is no in-app ordering or payment; customers browse and contact messes directly.",
+    "overview": "Finding an updated tiffin or mess menu usually means texting the owner directly. MessMenu gives students a searchable directory of local messes with live menus and pricing, and gives owners a simple portal to keep their listing current - built as my first cross-platform mobile app with a cloud backend.",
     "highlights": [
       "Role-based React Navigation stack from a Welcome screen splits into a Customer browse path and a Mess Owner login/update path (App.js).",
       "Owner CRUD over REST: signup POST /messdetails, login POST /auth, edit fields PATCH /:id, and base64 image upload PATCH /upmessimages/:id.",
@@ -1111,7 +1154,7 @@ const projects = [
     "link": null,
     "github": "https://github.com/itsDigvijaysing/gnome-stage-manager",
     "private": false,
-    "overview": "Stage Manager is a single-file GNOME Shell 45-50 extension (GJS/ESM) that recreates macOS Stage Manager. Windows on the active workspace form the visible active group; minimizing a window splits it into its own inactive group, rendered as a stacked-thumbnail card in a transparent left sidebar. Clicking a card swaps stages: the active group minimizes while the target group unminimizes and is raised. It also offers per-app and per-workspace sidebar modes, an optional maximize-to-workspace behavior, bell-curve hover scaling, 3D perspective, live previews, and a libadwaita preferences dialog.",
+    "overview": "macOS's Stage Manager makes window management effortless; GNOME had nothing like it. This extension recreates it - minimized windows collapse into a stack you can flip back to from a sidebar - while following GNOME's strict extension-review standards for lifecycle cleanup and multi-monitor support.",
     "highlights": [
       "Groups mode: minimizing a window pops it into its own inactive stage; clicking a sidebar card swaps stages (minimizes the active group, unminimizes and raises the target).",
       "Three sidebar modes (groups/apps/workspaces) with stacked window-clone thumbnails, bell-curve hover scaling, 3D Y-axis perspective, live previews, and app-icon fallback for uncloneable windows.",
@@ -1230,7 +1273,7 @@ const projects = [
     "link": null,
     "github": "https://github.com/itsDigvijaysing/Emotion_Recognition_Epoch",
     "private": false,
-    "overview": "A PyTorch notebook that classifies the eight RAVDESS speech emotions from both audio and text. Each clip is turned into a log-Mel spectrogram for a 2D CNN, while its transcript (predefined emotion sentences by default, or optional OpenAI Whisper output) trains a bidirectional LSTM and a fine-tuned DistilBERT. The unimodal models are then combined two ways: early fusion concatenates their frozen features into a classifier head, and late fusion averages the softmax probabilities. Every model is trained, saved, and evaluated end-to-end in a single script.",
+    "overview": "Recognizing emotion from a single modality misses a lot of context - tone of voice says something text alone doesn't. This project classifies eight RAVDESS speech emotions by fusing an audio CNN with text models two different ways, and shows fusion substantially outperforms either signal alone.",
     "highlights": [
       "2D CNN over log-Mel spectrograms for audio, plus a bidirectional 2-layer LSTM and a fine-tuned DistilBERT over transcripts",
       "Two fusion modes: early fusion concatenates frozen unimodal features into an FC head; late fusion averages softmax probabilities",
@@ -1358,6 +1401,7 @@ const projects = [
     "slug": "salesforce-apex-code-fixer",
     "date": "2023-08",
     "featured": false,
+    "hidden": true,
     "tags": [
       "Salesforce",
       "Security",
@@ -1367,7 +1411,7 @@ const projects = [
     "link": null,
     "github": "https://github.com/itsDigvijaysing/SF_Security_Issue_Fixer",
     "private": false,
-    "overview": "A full-stack web app that hardens Salesforce Apex code against common security issues. A React (Create React App) frontend lets the user paste Apex and toggle fix options, then POSTs the code plus selections to a Flask backend. The server conditionally applies regex-based transforms - injecting WITH USER_MODE into SOQL queries, wrapping DML in isCreateable/isUpdateable/isDeleteable CRUD pre-checks, adding a with/without/inherited sharing modifier, and commenting out System.debug lines - writes the result to output_code.txt, and serves it back for display and download. All remediation is rule/regex-based; there is no ML or LLM in the pipeline.",
+    "overview": "Common Apex security gaps - missing FLS/CRUD checks, no sharing declaration - are easy to miss in review and tedious to patch by hand. This tool takes pasted Apex, applies a set of targeted regex fixes for the most common issues, and hands back hardened code - a rules-based first pass, not a substitute for a real security review.",
     "highlights": [
       "Flask /submit-code chains up to four regex Apex transforms, each gated by a frontend checkbox; /output-file serves the patched file",
       "soql_query_fixer injects WITH USER_MODE (FLS); dml_operation_fixer wraps Insert/Update/Upsert/Delete in CRUD isCreateable/isUpdateable/isDeleteable pre-checks",
@@ -1492,6 +1536,7 @@ const projects = [
     "slug": "shooting-competition",
     "date": "2023-06",
     "featured": false,
+    "hidden": true,
     "tags": [
       "Web",
       "Full Stack"
@@ -1500,7 +1545,7 @@ const projects = [
     "link": null,
     "github": "https://github.com/itsDigvijaysing/shooting_competition",
     "private": false,
-    "overview": "A React 18 single-page app talking to a Node.js/Express REST API backed by MySQL, for running shooting competitions end to end. JWT auth with admin and participant roles gates the routes; admins create competitions, register participants, and enter scores series-by-series (10 individual shots each), which are written transactionally into series_scores and shots and used to recompute each participant's totals, ten-pointers, and first/last series scores. The backend then produces ranked leaderboards using SQL window functions with a 4-level tie-break, awards Gold/Silver/Bronze per Event x Age x Gender category, computes finals qualifiers and medal tallies, and supports CSV export plus an analytics dashboard.",
+    "overview": "Running a shooting match on spreadsheets makes scoring, ranking, and tie-breaks error-prone. This platform digitizes the whole flow - register shooters, enter 10-shot series, and get ranked leaderboards with proper tie-break rules and medal assignment automatically, plus CSV export for official records.",
     "highlights": [
       "JWT auth with role-based access: an Axios interceptor attaches the Bearer token and Express authenticateUser/requireAdmin middleware gate admin-only register, score, analytics and user-management routes.",
       "Score entry saves 10 shots per series inside a MySQL transaction (series_scores + shots), auto-calculating series totals and ten-pointers and denormalizing per-participant totals and first/last series scores.",
@@ -1613,6 +1658,7 @@ const projects = [
     "slug": "leave-management",
     "date": "2023-03",
     "featured": false,
+    "hidden": true,
     "tags": [
       "Salesforce",
       "LWC"
@@ -1621,7 +1667,7 @@ const projects = [
     "link": null,
     "github": "https://github.com/itsDigvijaysing/Leave-Management-System-Salesforce",
     "private": false,
-    "overview": "A Salesforce application built from a single Lightning Web Component and an Apex backend for applying, editing, and approving employee leaves. Employees submit Planned/Sick/Unpaid leave requests through a lightning-record-form (status defaults to Pending) and track them in a status-colored datatable and Chart.js pie charts of consumed vs. remaining balance. Managers open an 'Applied Leaves' tab to set the Status picklist to Approve/Reject with a comment; an after insert/update Apex trigger then tallies approved days into the User_Leaves__c object, whose Remaining Leaves is a formula field. Access is role-gated - SECURITY_ENFORCED SOQL scopes employees to their own records while managers can query all requests.",
+    "overview": "Leave requests and approvals in Salesforce usually mean back-and-forth emails and a spreadsheet tracking balances somewhere. This LWC app lets employees apply and track requests in one place, gives managers an approval queue, and keeps leave balances accurate automatically via an Apex trigger - a small internal tool built to learn LWC and Apex trigger patterns end to end.",
     "highlights": [
       "Single three-tab LWC: personal request datatable, Chart.js pie dashboards of consumed vs. remaining leaves, and a manager-wide 'Applied Leaves' view.",
       "after insert/update Apex trigger auto-tallies approved days (daysBetween+1) into User_Leaves__c.Total_Consumed__c, with Remaining Leaves as a formula field.",

@@ -4,19 +4,27 @@ import WorkflowLightbox from './WorkflowLightbox.jsx';
 // ── Layout ──────────────────────────────────────────────────────────────────
 // Turns the authored { caption, rows, edges } model into absolute SVG geometry.
 // Rows are explicit vertical levels; nodes within a row are centered across the
-// canvas. Edges are cubic-bezier connectors (downward) or dashed side loops
-// (feedback / back-edges). Pure function → inline preview and the zoom overlay
-// share identical geometry.
+// canvas. Edge routing is what makes it read as a flowchart rather than a column:
+//   • adjacent rows        → straight/diagonal downward connector
+//   • forward edge skipping ≥1 row (a bypass / branch that jumps over nodes)
+//                          → solid arc bowing out to the LEFT, around the skipped
+//                            nodes, so the branch is visible instead of hidden
+//                            behind the spine
+//   • back edge / same row (a loop) → dashed arc bowing out to the RIGHT
+// SIDE reserves horizontal room on both flanks so those arcs are never clipped.
+// Pure function → inline preview and the zoom overlay share identical geometry.
 const NW = 152;
 const NH = 54;
 const COLGAP = 30;
 const ROWGAP = 52;
 const PAD = 24;
+const SIDE = 58; // gutter for edges that bow around the node column (bypass left, loop right)
+const BOW = 46; // how far those arcs bow past the node edge
 
 export function layoutWorkflow(data) {
   const rows = data?.rows || [];
   const maxCols = rows.reduce((m, r) => Math.max(m, r.length), 1);
-  const width = PAD * 2 + maxCols * NW + (maxCols - 1) * COLGAP;
+  const width = PAD * 2 + SIDE * 2 + maxCols * NW + (maxCols - 1) * COLGAP;
   const height = PAD * 2 + rows.length * NH + Math.max(0, rows.length - 1) * ROWGAP;
 
   const byId = {};
@@ -38,32 +46,43 @@ export function layoutWorkflow(data) {
       if (!s || !t) return null;
       const sCx = s.x + NW / 2;
       const tCx = t.x + NW / 2;
-      const up = e.back || t.row <= s.row;
+      const up = e.back || t.row <= s.row; // loop / feedback (dashed, right side)
+      const skip = !up && t.row - s.row > 1; // forward bypass over ≥1 row (solid, left side)
       let path;
       let lx;
       let ly;
       if (up) {
-        // Feedback loop - bow out to the right of both nodes.
+        // Loop - bow out to the RIGHT of both nodes.
         const sRx = s.x + NW;
         const sRy = s.y + NH / 2;
         const tRx = t.x + NW;
         const tRy = t.y + NH / 2;
-        const cx = Math.max(sRx, tRx) + 48;
+        const cx = Math.max(sRx, tRx) + BOW;
         path = `M ${sRx} ${sRy} C ${cx} ${sRy}, ${cx} ${tRy}, ${tRx} ${tRy}`;
         lx = cx;
         ly = (sRy + tRy) / 2;
+      } else if (skip) {
+        // Bypass branch - bow out to the LEFT, around the rows it skips, so the
+        // branch is visible instead of running straight through the spine.
+        const sLx = s.x;
+        const sLy = s.y + NH / 2;
+        const tLx = t.x;
+        const tLy = t.y + NH / 2;
+        const cx = Math.min(sLx, tLx) - BOW;
+        path = `M ${sLx} ${sLy} C ${cx} ${sLy}, ${cx} ${tLy}, ${tLx} ${tLy}`;
+        lx = cx;
+        ly = (sLy + tLy) / 2;
       } else {
+        // Adjacent rows - downward connector (diagonal when the target is offset).
         const sy = s.y + NH;
         const ty = t.y;
         const dy = ty - sy;
         path = `M ${sCx} ${sy} C ${sCx} ${sy + dy * 0.5}, ${tCx} ${ty - dy * 0.5}, ${tCx} ${ty}`;
-        // Tuck the label into the gap just below the source so it never lands on an
-        // intermediate/target node when the edge skips a row (dy spans >1 level).
         const f = Math.min(0.45, 24 / dy);
         lx = sCx + (tCx - sCx) * f;
         ly = sy + dy * f;
       }
-      return { ...e, path, up, lx, ly };
+      return { ...e, path, up, skip, lx, ly };
     })
     .filter(Boolean);
 

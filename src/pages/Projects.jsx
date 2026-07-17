@@ -9,6 +9,7 @@ const FILTERS = ['AI', 'ML', 'Full Stack', 'Mobile', 'Desktop', 'Salesforce'];
 
 export default function Projects() {
   const [filter, setFilter] = useState('all');
+  const [showMore, setShowMore] = useState(false);
 
   usePageMeta({
     title: 'Projects',
@@ -17,7 +18,9 @@ export default function Projects() {
     path: '/projects',
   });
 
-  const list = filter === 'all' ? projects : projects.filter((p) => (p.tags || []).includes(filter));
+  const filtered = filter === 'all' ? projects : projects.filter((p) => (p.tags || []).includes(filter));
+  const list = filtered.filter((p) => !p.hidden);
+  const extra = filtered.filter((p) => p.hidden);
 
   return (
     <section className="page-top">
@@ -58,6 +61,28 @@ export default function Projects() {
           </div>
         ) : (
           <div className="empty-state">No projects match this filter.</div>
+        )}
+
+        {extra.length > 0 && (
+          <div className="project-more">
+            <button
+              type="button"
+              className="show-more-btn"
+              onClick={() => setShowMore((v) => !v)}
+              aria-expanded={showMore}
+            >
+              {showMore ? 'Show less' : `Show ${extra.length} more project${extra.length > 1 ? 's' : ''}`}
+            </button>
+            {showMore && (
+              <div className="project-grid">
+                {extra.map((p, i) => (
+                  <Reveal key={p.slug} index={i} style={{ display: 'flex' }}>
+                    <ProjectCard p={p} />
+                  </Reveal>
+                ))}
+              </div>
+            )}
+          </div>
         )}
       </div>
     </section>
