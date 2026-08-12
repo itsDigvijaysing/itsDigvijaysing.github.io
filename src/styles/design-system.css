@@ -26,6 +26,10 @@
   --radius-lg: 20px;
   --nav-h: 4.25rem;
   --max-w: 1200px;
+  /* Prose measure. The review pages inherited ch-based caps drawn for an 880px
+     column; at 1200px those wrap text at ~half the width and leave the rest of
+     the line empty. rem-based so blocks at different font-sizes share a right edge. */
+  --measure: 56rem;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --font: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;

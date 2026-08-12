@@ -26,13 +26,15 @@ Personal portfolio site for **Digvijaysing Rajput**, hosted as a **GitHub Pages 
 ```
 index.html                 # Vite entry: <div id="root"> + /src/main.jsx; full SEO <head> (OG/Twitter/JSON-LD, canonical, theme-color)
 src/
-├── main.jsx               # createRoot + BrowserRouter; latin-only @fontsource imports; 2 CSS files
+├── main.jsx               # createRoot + BrowserRouter; latin-only @fontsource imports; 3 CSS files
 ├── App.jsx                # skip-link · ScrollToTop · Navbar · <Routes> · Footer; <main> re-keys on route for page-enter anim
 ├── pages/                 # Home, About, Journey, Projects, ProjectDetail, NotFound
 ├── components/            # Navbar, Footer, ScrollToTop, HeroBot, ParticleWeb, Magnetic, Reveal, RotatingText, CountUp, ProjectCard, SocialIcons, Workflow, WorkflowLightbox, JourneyPath (Journey-page milestone path, scroll-drawn SVG), DotGrid (cursor-spotlight dot lattice; one instance in App.jsx as a fixed backdrop behind interior pages — skipped on Home where ParticleWeb owns that layer; z-index -1, radial edge mask, resting dots near-invisible)
 ├── hooks/usePageMeta.js   # per-route title/description/canonical/OG (patches existing head tags; no react-helmet)
+├── components/ProjectReviews/  # 5 bespoke per-project showcase components + index.js slug→component registry (see below)
 ├── data/projects.js       # single source of truth (13 projects) + featuredProjects / getProject helpers; each has a `workflow` {caption,rows,edges} driving the SVG diagram + zoom/pan modal on ProjectDetail
-└── styles/                # design-system.css (tokens + primitives) + components.css
+├── utils/                 # youtube.js (embed/thumbnail URLs) · motion.js (prefersReducedMotion)
+└── styles/                # design-system.css (tokens + primitives) + components.css + project-reviews.css
 public/                    # copied verbatim to dist root
 ├── assets/img/            # self.jpg, logo.png, og-cover.png, hero_greeting.webm   ← the ONLY runtime images
 ├── assets/resume/Digvijaysing_RESUME.pdf
@@ -45,6 +47,20 @@ public/                    # copied verbatim to dist root
 **Runtime images live in `public/assets/img/` — not the repo-root `assets/`.** Anything the app references via `/assets/...` resolves to `public/`. See the cleanup note below about the root `assets/` tree.
 
 **Design direction:** **light** theme (`--bg:#f5f8fd`, white cards, `--text:#12233d`), editorial touches (Instrument Serif italic accents via `.serif`, mono section labels, timeline rails, project cover banners). Raise craft toward MagiTech; **do not convert to dark** unless the user asks. Every animation honors `prefers-reduced-motion`.
+
+### Project showcase pages (`src/components/ProjectReviews/`) — added Aug 2026
+
+**All 9 visible projects** have a **bespoke detail page**; the 4 `hidden:true` ones keep the generic layout. `index.js` maps slug → component and `ProjectDetail.jsx` branches on that lookup, so **anything absent falls back to generic Overview/Highlights**. Each page is ~200 lines of hand-built JSX whose motif comes from the project itself (hex stat radar, CPU/GPU pipeline, citation card, 3D card stack, channel hub, agent loop ring, class-imbalance bar, role fork, emotion wheel) plus four numbered sections.
+
+- The first 5 (`lightspeak-ai`, `indian-law-ai-portal`, `stat-up`, `gnome-stage-manager`, `ai-linux-assistant`) were **ported from MagiTech**. The other 4 (`web-agents`, `pirvision-classifier`, `messmenu-app`, `emotion-recognition`) were **written from their GitHub repos** - every figure is sourced, never invented to fill a layout.
+- **Showcase layout:** cover → description → facts strip → video banner (only if `videoId`) → review → Workflow as section 05. **No** Overview/Highlights (the review carries them) and **no** Tech Stack block - the facts strip names the top 3 techs instead. Generic layout is unchanged.
+- **`videoId`** in `projects.js` drives a click-to-play banner (`ProjectVideo.jsx`); nothing loads from YouTube until clicked. Without it the banner and its lead-in gap are skipped entirely (`.project-showcase--novideo`).
+- **Prose width:** all review prose caps at `--measure` (`:root`, 56rem). MagiTech's caps were `ch`-based for its 880px column; at this site's 1200px they wrapped text at ~half the width and looked broken. `ch` also scales with font-size, so small-text notes came out far narrower than the lede - hence one rem token, not per-block `ch`.
+- **Copy style:** no em dashes (use spaced hyphens), and keep each paragraph a single continuous line in JSX. Multi-line JSX text is fine (newlines collapse to one space) **except** next to `{' '}` or an inline element carrying its own padding spaces, which then renders double spaces.
+- **`project-reviews.css` is 4 parts:** ① a token bridge on `.dt` mapping MagiTech's ~40 token names onto ours + scoped `ul/ol`/`button` resets it assumed globally, ② the ported rules verbatim apart from color, ③ light-theme corrections, ④ page wrapper. **Edit it directly** — the port script was one-shot.
+- **Scoped resets must use `:where()`.** The ported rules are nearly all single-class (0,1,0), so a plain `.dt button {}` at (0,1,1) silently overrides them — it stripped `.gsm__card`'s gradient/border and knocked `.dt__h2` to weight 700. Never add margin/padding to the `ul/ol` reset either: `*` already zeroes both, and repeating it cost `.lsa__timeline` its `padding-left` (text landed on top of the rail).
+- **Gotchas if you touch this:** dark→light is *not* a token swap. Borders need ~50% more alpha to read (8% white on black ≠ 10% navy on white); `color: var(--accent)` fails AA as small text (3.0:1) so text uses `--accent-2` (8.4:1) while strokes/fills keep the cyan; MagiTech's grid-lines-via-`gap` trick fills empty grid areas with visible grey on white (the channel hub draws borders on cells instead). Don't wrap a review in `.project-detail` — its element selectors (`p`, `li`, `li::before`, `h2`) outrank the review's classes; use `.project-showcase`.
+- **Spacing:** the large end of the scale (`--space-8`…`--space-24`) is pulled in from MagiTech's values because those margins stack (a hero's margin inside a section that already has one) and this site runs 1200px wide vs MagiTech's 880px. Small end is unchanged.
 
 ### Hero mascot (`src/components/HeroBot.jsx`)
 
@@ -102,8 +118,8 @@ Vite only bundles `src/ + public/ + index.html`, so leftover files never ship to
 - **Microsoft FRT — Cloud & DevOps Intern** (Mar–May 2022): containerized Mess Menu React app to Azure App Service with CI/CD.
 
 ### Featured projects (homepage) & skills
-- Featured are `featured:true` in `src/data/projects.js` (currently: LightSpeak AI, Indian Law AI Portal, Stat-Up, Jira Automation Portal, AI Linux Assistant, GNOME Stage Manager).
-- `hidden:true` projects (Salesforce Apex Code Fixer, Shooting Competition, Leave Management System) are collapsed behind a "Show N more" toggle on `/projects` (see `Projects.jsx`) instead of shown directly — basic/coursework-grade work, kept but deprioritized.
+- Featured are `featured:true` in `src/data/projects.js` (currently: LightSpeak AI, Indian Law AI Portal, Stat-Up, AI Linux Assistant, GNOME Stage Manager, PIRvision Classifier).
+- `hidden:true` projects (Jira Automation Portal, Salesforce Apex Code Fixer, Shooting Competition, Leave Management System) are collapsed behind a "Show N more" toggle on `/projects` (see `Projects.jsx`) instead of shown directly — basic/coursework-grade work, kept but deprioritized.
 - ML: LLM/VLM Fine-Tuning, Deep Learning, Deep RL, LoRA, RAG, Transformers · Languages: Python, C++, SQL, JavaScript · Web: React, Django, Node, REST · Tools: Git, Docker, Linux, Azure, CI/CD, Hugging Face, PyTorch · Salesforce (legacy): Apex, LWC, Einstein AI.
 - Certifications — Salesforce: Admin, AI Associate, Platform Dev I & II, JS Dev I, Process Automation AP, Copado I & II · Cloud: Microsoft AZ-900.
 

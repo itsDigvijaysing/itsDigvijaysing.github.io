@@ -4,8 +4,9 @@
 const projects = [
   {
     "title": "LightSpeak AI",
-    "subtitle": "Multi-channel RAG AI for customer care",
+    "subtitle": "Multi-Channel Conversational AI for Customer Care",
     "slug": "lightspeak-ai",
+    "videoId": "26yLzhofjl0",
     "date": "2025-11",
     "featured": true,
     "tags": [
@@ -14,7 +15,7 @@ const projects = [
       "RAG",
       "Full Stack"
     ],
-    "desc": "Multi-channel (voice, chat, email) customer-care AI that answers from each tenant's own documents via hybrid RAG, billed per token.",
+    "desc": "Production conversational AI unifying voice, chat, and email - real-time STT/TTS, multilingual support, and hybrid RAG grounded in each tenant's own documents. Deployed for partners including IIT Hyderabad and ITIC Incubator.",
     "link": "https://lightspeak.ai/",
     "linkLabel": "Visit Website",
     "github": null,
@@ -22,7 +23,7 @@ const projects = [
     "overview": "LightSpeak lets B2B companies drop a voice, chat, and email AI agent into their product that only answers from that tenant's own documents, so support scales without sacrificing accuracy or leaking data across customers. I built it as a metered, multi-tenant platform from the ground up - a Django backend runs retrieval and billing for every text turn, while a dedicated low-latency worker handles real-time voice.",
     "highlights": [
       "Hybrid RAG: one SQL query blends pgvector cosine (0.7) + Postgres BM25 (0.3), org-scoped for tenant isolation, with optional Cohere rerank and an exact-match FAQ fast-path",
-      "One Django orchestrator per text turn: wallet reserve -> RAG -> persona/opacity prompt ->  llm LLM -> vendor-name sanitizer -> wallet commit; retrieved docs fenced in a per-turn random nonce to resist prompt injection",
+      "One Django orchestrator per text turn: wallet reserve -> RAG -> persona/opacity prompt -> llm LLM -> vendor-name sanitizer -> wallet commit; retrieved docs fenced in a per-turn random nonce to resist prompt injection",
       "Real-time voice worker runs STT->LLM->TTS in-process. Django is only called for persona, history, and metering, keeping latency low. Each tenant can upload a unique voice for TTS."
     ],
     "techStack": [
@@ -105,8 +106,9 @@ const projects = [
   },
   {
     "title": "Indian Law AI Portal",
-    "subtitle": "Grounded RAG over Indian statutes",
+    "subtitle": "Agentic RAG for Indian Legal Queries",
     "slug": "indian-law-ai-portal",
+    "videoId": "KKpGBPhEnt8",
     "date": "2026-04",
     "featured": true,
     "tags": [
@@ -114,7 +116,7 @@ const projects = [
       "RAG",
       "Agents"
     ],
-    "desc": "Agentic RAG assistant answering Indian-law questions grounded in 25 official statute PDFs, with hybrid retrieval, domain agents and validated citations.",
+    "desc": "Agentic AI portal answering Indian-law questions grounded in 25 official statute PDFs - RAG Fusion hybrid retrieval, ten domain-specialized agents, and citation validation that refuses ungrounded answers.",
     "link": null,
     "github": "https://github.com/itsDigvijaysing/Indian-Law-AI-Portal",
     "private": false,
@@ -462,7 +464,7 @@ const projects = [
     "subtitle": "PIR sensor human-activity deep learning",
     "slug": "pirvision-classifier",
     "date": "2025-06",
-    "featured": false,
+    "featured": true,
     "tags": [
       "ML",
       "IoT",
@@ -584,8 +586,9 @@ const projects = [
   },
   {
     "title": "Stat-Up",
-    "subtitle": "Anime-RPG gamified daily task tracker",
+    "subtitle": "Anime-RPG Gamified Daily Tracker",
     "slug": "stat-up",
+    "videoId": "gvXfM7x2DlU",
     "date": "2026-05",
     "featured": true,
     "tags": [
@@ -593,7 +596,7 @@ const projects = [
       "Android",
       "Kotlin"
     ],
-    "desc": "Android app that turns daily tasks and Todoist sync into an anime RPG status window: earn points, level 6 stats, rank up E to S, redeem rewards.",
+    "desc": "Offline-first Android app that turns daily tasks and Todoist sync into an anime RPG status window - six stats on a hexagon radar, rank progression from E to S, custom rewards, and a liquid-glass UI.",
     "link": null,
     "github": "https://github.com/itsDigvijaysing/Stat-Up",
     "private": false,
@@ -736,7 +739,8 @@ const projects = [
     "subtitle": "AI turns requirements into Jira tickets",
     "slug": "jira-automation-portal",
     "date": "2025-07",
-    "featured": true,
+    "featured": false,
+    "hidden": true,
     "tags": [
       "AI",
       "Productivity",
@@ -873,8 +877,9 @@ const projects = [
   },
   {
     "title": "AI Linux Assistant",
-    "subtitle": "Fully local Linux voice assistant",
+    "subtitle": "Local-First Voice Assistant for GNOME/Wayland",
     "slug": "ai-linux-assistant",
+    "videoId": "2Qq7Jslxo6Y",
     "date": "2026-02",
     "featured": true,
     "tags": [
@@ -882,7 +887,7 @@ const projects = [
       "LLM",
       "Python"
     ],
-    "desc": "Local-first Linux voice assistant: Parakeet ASR, qwen3 via Ollama, and SuperTonic TTS all offline, that can safely act on your GNOME desktop.",
+    "desc": "Local-first voice assistant for GNOME/Wayland that holds a conversation and actually acts on the machine: full-duplex barge-in, typed MCP tools instead of injected commands, and a safety gate built for a model that can run shell commands.",
     "link": null,
     "github": "https://github.com/itsDigvijaysing/AI_Linux_Assistant",
     "private": false,
@@ -1141,8 +1146,9 @@ const projects = [
   },
   {
     "title": "GNOME Stage Manager",
-    "subtitle": "macOS Stage Manager for GNOME",
+    "subtitle": "macOS-style Window Management for GNOME",
     "slug": "gnome-stage-manager",
+    "videoId": "8fnFvYaxUMo",
     "date": "2026-03",
     "featured": true,
     "tags": [
@@ -1150,7 +1156,7 @@ const projects = [
       "GNOME",
       "JavaScript"
     ],
-    "desc": "A GNOME Shell extension that groups windows into stages, showing inactive groups as thumbnail cards in a left sidebar; click a card to swap stages.",
+    "desc": "GNOME Shell extension recreating macOS Stage Manager - group windows into stages and swap them from a sidebar of stacked 3D thumbnails, with groups, apps, and workspaces modes. GNOME 46-50, Wayland and X11.",
     "link": null,
     "github": "https://github.com/itsDigvijaysing/gnome-stage-manager",
     "private": false,
