@@ -80,7 +80,7 @@ export default function Navbar() {
             </NavLink>
           </li>
           <li>
-            <a href="https://magitech.site" target="_blank" rel="noopener noreferrer" onClick={close}>
+            <a href="https://magitech.in" target="_blank" rel="noopener noreferrer" onClick={close}>
               MagiTech
             </a>
           </li>
