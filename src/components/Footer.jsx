@@ -16,7 +16,7 @@ export default function Footer() {
             <Link to="/projects">Projects</Link>
           </li>
           <li>
-            <a href="https://magitech.site" target="_blank" rel="noopener noreferrer">
+            <a href="https://magitech.in" target="_blank" rel="noopener noreferrer">
               MagiTech
             </a>
           </li>
