@@ -66,13 +66,31 @@ public/                    # copied verbatim to dist root
 
 - Transparent greeting video — `public/assets/img/hero_greeting.webm` (VP9 `yuva420p` alpha, 520×882). Minimal soft blue glow (`.hero__bot-aura`) + a vertical "door" accent line (`.hero__bot-line`) that drops in on load.
 - **Playback:** full greeting **once on load, then replays every 30s** (not a continuous loop); re-fires on every Home visit (page remounts per route). Gated on `prefers-reduced-motion`.
-- **Transparency is a one-time chroma-key, not a runtime effect.** The green-screen **source master** is `assets/img/hero_bot_greet_bg.mp4` (repo root — *keep it*, it's how the webm is regenerated). To redo/replace:
+- **Transparency is a one-time chroma-key, not a runtime effect.** The green-screen **source master** is `assets/img/hero_bot_greet_bg.mp4` (repo root — *keep it*, it's how the webm is regenerated; 720×1280, 9.8s, flat `#25B936`).
+- ⚠ **WebKit ignores VP9 alpha.** Safari and every iOS/iPadOS browser (all WKWebView — Brave, Chrome, Firefox included) *play* the webm but render the **RGB plane opaque**, ignoring the alpha. So whatever sits under the alpha is what iOS shows as a solid rectangle. Apple's only transparent-video path is HEVC-with-alpha, which x265 on Linux cannot encode. Fixed 2026-08-17 with two layers:
+  1. **Still fallback** — `HeroBot.jsx` probes alpha support at runtime (draws a frame to a 32×54 canvas, reads the alpha back; all-opaque ⇒ WebKit dropped it) and swaps the `<video>` for `public/assets/img/hero_bot_still.webp` (520×882 RGBA, keyed from the master at t=6.0s, same crop). iOS gets genuine transparency over the particle backdrop, just no animation. **Runtime probe, not UA sniffing** — it stays correct when WebKit ships VP9 alpha.
+  2. **Light underlay** — the video's RGB plane is composited over `--bg` (`#F5F8FD`) instead of the keyed green, so if the probe never resolves (autoplay blocked in Low Power Mode ⇒ no `timeupdate` ⇒ no frame to read) the worst case is a near-invisible light box, not a dark green one. **Never leave the keyed green under the alpha** — that shipped once and put a dark green box on the hero for every iOS visitor.
+  - Alpha-capable browsers are unaffected by both: where alpha is 0 the RGB is never sampled. Only the antialiased edge pixels change, and they improve (the fringe now blends toward the page instead of dark green).
+- **Regenerate** (the crop/scale reproduces the exact shipped framing — derived by matching content bboxes, don't change it casually):
   ```bash
-  ffmpeg -i assets/img/hero_bot_greet_bg.mp4 \
-    -vf "chromakey=0x25b936:0.10:0.02,despill=type=green,crop=..." \
-    -c:v libvpx-vp9 -pix_fmt yuva420p -auto-alt-ref 0 -b:v 0 -crf 34 -an \
+  ffmpeg -i assets/img/hero_bot_greet_bg.mp4 -filter_complex "\
+  [0:v]crop=668:1133:51:99,chromakey=0x25b936:0.10:0.02,despill=type=green,format=yuva420p,scale=520:882,format=yuva420p[keyed];\
+  [keyed]split[k1][k2];\
+  [k1]format=yuva420p,alphaextract,format=gray[al];\
+  color=c=0xF5F8FD:s=520x882:r=30:d=9.8,format=yuv420p[bg];\
+  [bg][k2]overlay=shortest=1:format=yuv420,format=yuv420p[flat];\
+  [flat][al]alphamerge[out]" \
+    -map "[out]" -c:v libvpx-vp9 -pix_fmt yuva420p -auto-alt-ref 0 -b:v 0 -crf 34 -an \
     public/assets/img/hero_greeting.webm
   ```
+  Key at native res **before** `scale` or the edges pick up green fringes. `alphaextract` needs an explicit `format=yuva420p` ahead of it or the filtergraph fails to negotiate. The still fallback comes from the same master and crop:
+  ```bash
+  ffmpeg -ss 6.0 -i assets/img/hero_bot_greet_bg.mp4 -frames:v 1 \
+    -vf "crop=668:1133:51:99,chromakey=0x25b936:0.10:0.02,despill=type=green,format=rgba,scale=520:882" \
+    -c:v libwebp -lossless 0 -q:v 88 public/assets/img/hero_bot_still.webp
+  ```
+  Pick a `-ss` where the robot is fully in frame — it enters after the start and **exits before the end** (frames past ~8.5s are empty).
+- ⚠ **`ffprobe` cannot tell you whether the webm has alpha.** It reports `pix_fmt=yuv420p` and ffmpeg decodes frames to plain RGB even when the alpha is present and correct — ffmpeg's VP9 decoder doesn't reconstruct WebM alpha from `BlockAdditional`. The real signal is the container tag: `ffprobe -show_entries stream_tags=alpha_mode` → `alpha_mode=1`. Decoding a frame shows you the **RGB plane** (i.e. exactly what iOS renders), which is useful — just don't read it as proof that alpha is missing.
 - ⚠ **Do NOT debug video/animation via headless screenshots** — headless Chromium can't advance video under its virtual clock and mis-renders it (looks like clipping/stuck frames that aren't real). Verify hero motion in a real browser or ask the user.
 
 ---
