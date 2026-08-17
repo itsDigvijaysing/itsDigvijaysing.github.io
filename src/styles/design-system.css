@@ -1,6 +1,11 @@
 /* Digvijaysing Portfolio - design system (Vite + React) */
 
 :root {
+  /* Light-only. Two declarations on purpose: UAs that don't parse the `only`
+     keyword keep `light`, the rest take `only light` and skip their forced-dark
+     pass (see the matching <meta name="color-scheme"> in index.html). */
+  color-scheme: light;
+  color-scheme: only light;
   --bg: #f5f8fd;
   --bg-elevated: #ffffff;
   --bg-card: #ffffff;
