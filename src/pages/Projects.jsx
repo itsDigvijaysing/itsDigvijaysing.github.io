@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Reveal from '../components/Reveal.jsx';
 import ProjectCard from '../components/ProjectCard.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
+import { PAGE_META } from '../data/pageMeta.js';
 import projects from '../data/projects.js';
 
 // Curated top-level categories that classify the work (not every tag).
@@ -11,12 +12,7 @@ export default function Projects() {
   const [filter, setFilter] = useState('all');
   const [showMore, setShowMore] = useState(false);
 
-  usePageMeta({
-    title: 'Projects',
-    description:
-      'Projects by Digvijaysing Rajput - AI agents, conversational platforms, RAG systems, mobile and desktop apps, and research.',
-    path: '/projects',
-  });
+  usePageMeta(PAGE_META['/projects']);
 
   const filtered = filter === 'all' ? projects : projects.filter((p) => (p.tags || []).includes(filter));
   const list = filtered.filter((p) => !p.hidden);

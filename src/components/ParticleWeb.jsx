@@ -42,6 +42,9 @@ export default function ParticleWeb() {
         rx: 0,
         ry: 0,
       }));
+      // Resizing the canvas clears it; redraw at once when no loop will
+      // (reduced motion, or the hero is scrolled out of view).
+      if (!running) render(false);
     };
 
     const render = (animate) => {
@@ -101,10 +104,23 @@ export default function ParticleWeb() {
       }
     };
 
+    // Animate only while the hero is on screen: once it scrolls away the loop
+    // stops instead of drawing frames nobody sees.
+    let running = false;
     const loop = () => {
       render(true);
+      if (running) raf = requestAnimationFrame(loop);
+    };
+    const start = () => {
+      if (running) return;
+      running = true;
       raf = requestAnimationFrame(loop);
     };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
+    let io = null;
 
     const onMove = (e) => {
       const rect = canvas.getBoundingClientRect();
@@ -123,11 +139,13 @@ export default function ParticleWeb() {
     } else {
       window.addEventListener('mousemove', onMove);
       window.addEventListener('mouseout', onLeave);
-      loop();
+      io = new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop()));
+      io.observe(canvas);
     }
 
     return () => {
-      cancelAnimationFrame(raf);
+      stop();
+      if (io) io.disconnect();
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseout', onLeave);

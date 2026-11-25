@@ -2,15 +2,24 @@ import { Fragment, useEffect, useState } from 'react';
 import AmbientWaveform from '../AmbientWaveform.jsx';
 import { prefersReducedMotion } from '../../utils/motion.js';
 
+// Phoenix v3 (the repo is still AI_Linux_Assistant). Every figure below comes from
+// the published repo: README.md, SECURITY.md, src/ai_linux/ARCHITECTURE.md and the
+// router benchmark in bench/README.md. Re-check them there before changing any.
+
+// The app's status pill: state names from state.py STATE_LABELS. It has no colour
+// per state; it gains an ember border while the big model thinks and speaks
+// (pill.py `ail-big`), which is the one colour shown here, darkened to stay legible.
+const EMBER = '#b4540a';
 const STATES = [
-  { key: 'idle', label: 'idle', hue: '#626fc9' },
-  { key: 'listening', label: 'listening', hue: '#3c8357' },
-  { key: 'thinking', label: 'thinking', hue: '#945acb' },
-  { key: 'speaking', label: 'speaking', hue: '#b9557b' },
-  { key: 'loading', label: 'starting', hue: '#9b6d29' },
+  { label: 'Ready', big: false },
+  { label: 'Listening', big: false },
+  { label: 'Thinking', big: false },
+  { label: 'Speaking', big: false },
+  { label: 'Thinking · 4B on NVIDIA', big: true },
+  { label: 'Speaking · 4B on NVIDIA', big: true },
 ];
 
-function StateMonogram() {
+function StatePill() {
   const [i, setI] = useState(0);
 
   useEffect(() => {
@@ -20,48 +29,49 @@ function StateMonogram() {
   }, []);
 
   const state = STATES[i % STATES.length];
+  const hue = state.big ? EMBER : 'var(--accent-2)';
   return (
     <div className="ail__monogram-row">
-      <span className="ail__monogram" style={{ '--state-color': state.hue }} aria-hidden="true">AI</span>
-      <span className="ail__monogram-label">top-bar monogram, live state colors from the shipped GNOME extension:{' '}<b style={{ color: state.hue }}>{state.label}</b></span>
+      <span className="ail__monogram" style={{ '--state-color': hue, borderColor: state.big ? EMBER : undefined }} aria-hidden="true">Ph</span>
+      <span className="ail__monogram-label">status pill, states from the app; the ember edge means the big model took over:{' '}<b style={{ color: hue }}>{state.label}</b></span>
     </div>
   );
 }
 
 const NODES = [
-  { tag: 'input', name: 'Silero VAD', where: 'CPU · always listening', gpu: false },
+  { tag: 'input', name: 'VAD + echo cancel', where: 'CPU · wake word "Phoenix"', gpu: false },
   { tag: 'speech→text', name: 'Parakeet ASR', where: 'CPU · ONNX', gpu: false },
-  { tag: 'reasoning', name: 'Local LLM · 4B', where: 'GPU · Ollama · thinking on', gpu: true },
+  { tag: 'routing', name: 'Rules → 0.8B router', where: 'Intel iGPU · OpenVINO 8-bit', gpu: true },
+  { tag: 'reasoning', name: 'Local LLM · 4B', where: 'NVIDIA · Ollama · only when needed', gpu: true },
   { tag: 'text→speech', name: 'SuperTonic TTS', where: 'CPU · ONNX', gpu: false },
-  { tag: 'output', name: 'Speaker', where: 'PipeWire · AEC', gpu: false },
 ];
 
 const STATS = [
-  { num: '22/22', lbl: 'live tool-calling test: right tool picked every time, on a 4B local model' },
-  { num: '42 / 19', lbl: 'destructive commands blocked / benign commands correctly allowed' },
-  { num: '13 + 2', lbl: 'typed desktop tools, plus the new Todoist tools built this session' },
-  { num: '0', lbl: 'runtime sudo calls; the whole voice loop runs as your user' },
+  { num: '74.1%', lbl: 'of real commands acted on correctly by the 0.8B router alone, with the NVIDIA GPU asleep' },
+  { num: '2.3%', lbl: 'wrong actions at that confidence threshold; anything less sure goes up to the 4B' },
+  { num: '90.1%', lbl: 'accuracy on 10 tools the router had never seen: a new tool is a menu line, not retraining' },
+  { num: '30', lbl: 'typed built-in tools, plus any MCP server you add, its tools switched on one by one' },
 ];
 
 const GATE_CARDS = [
   {
-    title: 'Every tool call',
-    body: 'Read-only tools (battery, time, search-open) run immediately, with no gate involved.',
+    title: 'Read-only tools',
+    body: 'Time, system status, the weather or reading your tasks run at once, with no gate involved.',
     pill: null,
   },
   {
-    title: 'Gated families',
-    body: 'shell · skills_actions · computer_use',
-    pill: { label: 'DENY by default', tone: 'deny' },
+    title: 'Anything that changes the computer',
+    body: 'Desktop tools, shell commands and every MCP tool run only while actions are allowed on the Safety page.',
+    pill: { label: 'GATED', tone: 'deny' },
   },
   {
-    title: 'Armed session',
-    body: 'Interactive launches arm actions automatically so the assistant can actually act.',
-    pill: { label: 'ALLOW', tone: 'allow' },
+    title: 'Risky steps',
+    body: 'A shell command is shown in full and needs a yes, on screen or by voice. Silence counts as no.',
+    pill: { label: 'YOU CONFIRM', tone: 'allow' },
   },
   {
-    title: 'Autonomy loop',
-    body: 'Independent of every other setting: gated families are never runnable unsupervised.',
+    title: 'Unattended automation',
+    body: 'Independent of every other setting: nothing that changes the computer ever runs unsupervised.',
     pill: { label: 'HARD FLOOR', tone: 'floor' },
   },
 ];
@@ -70,42 +80,42 @@ const CAPABILITIES = [
   {
     cat: 'Privacy',
     title: 'Nothing leaves the machine by default',
-    body: 'Brain, ASR, TTS, and VAD all run locally. No cloud call, no API key, unless you deliberately opt into a hosted-model config.',
+    body: 'Speech recognition, both models and the voice run locally, and Phoenix listens on no port. The internet is used only for features you switch on: web look-ups, Todoist, MCP servers you add.',
   },
   {
-    cat: 'Reliability',
-    title: 'Typed tools, not injected commands',
-    body: 'Each capability is a named function the model calls directly. The earlier keyword/RAG design was replaced after it misfired on ambient speech.',
+    cat: 'Battery',
+    title: 'The big GPU sleeps on battery',
+    body: 'Separate battery and charger profiles. On battery the 0.8B router on the Intel GPU picks commands, and in Save Battery the 4B loads only when needed and is freed after 2 minutes.',
+  },
+  {
+    cat: 'Speed',
+    title: 'Plain commands need no model',
+    body: '"Open Chrome", "lock the screen" or "set a timer for ten minutes" start with a command verb, so rules match them and they run at once. Everything else goes to the models.',
   },
   {
     cat: 'Voice UX',
     title: 'Full-duplex barge-in',
-    body: "Talk over it mid-sentence: PipeWire's WebRTC echo-cancel means the mic never re-hears the assistant's own voice.",
+    body: 'Talk over it mid-reply. Its own echo canceller is fed every sound it plays, and an interruption stops the reply only if the words heard are not its own.',
   },
   {
     cat: 'Native',
-    title: 'A real GNOME Shell extension',
-    body: 'The overlay orb and top-bar monogram are drawn by the Shell itself: no Electron, no browser view.',
+    title: 'One GTK4 app',
+    body: 'GTK4 and libadwaita, with a tray icon, a floating status pill and a global shortcut. No browser view and no Shell extension.',
   },
   {
-    cat: 'Reversibility',
-    title: 'Every install change is undoable',
-    body: 'Setup records each system change to a manifest; uninstall reverts exactly those deltas, with a dry-run preview.',
+    cat: 'Reliability',
+    title: 'Typed tools, not shell strings',
+    body: 'Volume, brightness, apps and media run fixed argument lists. Apps open only through their installed .desktop entry, so a request can never start poweroff.',
   },
   {
-    cat: 'Extensibility',
-    title: 'New capabilities are a small, testable unit',
-    body: 'Desktop actions and external integrations are both just typed MCP tools. The Todoist integration in this repo was added in one sitting.',
-  },
-  {
-    cat: 'Flexibility',
-    title: 'Two interchangeable brains',
-    body: 'A local 4B model via Ollama by default, or a hosted model for more headroom: same tools, same gate, one config swap.',
+    cat: 'Memory',
+    title: 'Knowledge that fades',
+    body: 'Facts you keep stay until you delete them; facts it learns from conversation fade 14 days after they were last used. "Remember that..." and "forget that..." work by voice.',
   },
   {
     cat: 'Containment',
     title: 'Defense in depth, not one lock',
-    body: 'A catastrophic-command denylist backed by kernel-enforced systemd-run resource caps: two independent layers, not one.',
+    body: 'A catastrophic-command blocklist in the one place every command runs, plus kernel-enforced systemd-run caps: 2 GB of memory, 512 tasks, 20 seconds.',
   },
 ];
 
@@ -113,19 +123,19 @@ export default function AiLinuxAssistantReview() {
   return (
     <>
       <section className="dt__section">
-        <StateMonogram />
+        <StatePill />
         <div className="ail__wave">
           <AmbientWaveform />
           <div className="ail__wave-cap">
-            <span>mic → vad → asr → llm → tts → speaker</span>
-            <span>barge-in: full-duplex (pipewire aec)</span>
+            <span>mic → vad → asr → rules / 0.8b / 4b → tts → speaker</span>
+            <span>barge-in: full-duplex (webrtc aec3)</span>
           </div>
         </div>
       </section>
 
       <section className="dt__section">
         <h2 className="dt__h2"><span className="dt__h2-num">01</span> The pipeline</h2>
-        <p className="dt__section-note">One rule shapes everything downstream: only the language model sits on the GPU. Everything that hears and speaks runs on the CPU as ONNX.</p>
+        <p className="dt__section-note">Built for an ordinary gaming laptop: a 6 GB RTX 3060 Mobile next to an Intel iGPU. On battery, rules and a 0.8B model on the Intel GPU handle most commands, and only chat or an unsure pick wakes the 4B on NVIDIA. Everything that hears and speaks runs on the CPU as ONNX.</p>
         <div className="ail__pipeline">
           {NODES.map((n, i) => (
             <Fragment key={n.name}>
@@ -142,17 +152,17 @@ export default function AiLinuxAssistantReview() {
           <div
             className="ail__budget-bar"
             role="img"
-            aria-label="GPU footprint: a small, fixed slice held by the language model, the rest stays free for headroom and display"
+            aria-label="Battery mode: 74 percent of real commands are handled by the small model on the Intel GPU; the rest, and all chat, wake the 4B model on NVIDIA"
           >
-            <span className="ail__budget-seg ail__budget-seg--gpu">LLM</span>
-            <span className="ail__budget-seg ail__budget-seg--cpu">headroom + display · everything else runs on CPU</span>
+            <span className="ail__budget-seg ail__budget-seg--gpu" style={{ width: '74%' }}>0.8B on Intel iGPU · 74%</span>
+            <span className="ail__budget-seg ail__budget-seg--cpu" style={{ width: '26%' }}>4B wakes</span>
           </div>
         </div>
       </section>
 
       <section className="dt__section">
-        <h2 className="dt__h2"><span className="dt__h2-num">02</span> Verified, not vibes</h2>
-        <p className="dt__section-note">Numbers from actual test runs against the shipped config, not aspirational claims.</p>
+        <h2 className="dt__h2"><span className="dt__h2-num">02</span> Measured, not vibes</h2>
+        <p className="dt__section-note">From the repo&apos;s router benchmark: 771 requests (hand-written spoken-style commands plus the public MASSIVE and CLINC150 sets), confidence threshold fitted on 30% and scored on the other 70%. Median routing time on the Intel GPU: 502 ms.</p>
         <div className="ail__stats">
           {STATS.map((s) => (
             <div key={s.lbl} className="ail__stat">
@@ -165,7 +175,7 @@ export default function AiLinuxAssistantReview() {
 
       <section className="dt__section">
         <h2 className="dt__h2"><span className="dt__h2-num">03</span> The safety gate</h2>
-        <p className="dt__section-note">A model that can run shell commands needs a gate designed for a background thread, not a blocking y/N prompt that would hang the voice loop.</p>
+        <p className="dt__section-note">Whether rules, the 0.8B router or the 4B picked the action, it goes through the same gate, and a spoken yes or no counts the same as a click. No sudo at runtime, ever.</p>
         <div className="ail__gate">
           {GATE_CARDS.map((c) => (
             <div key={c.title} className="ail__gate-card">

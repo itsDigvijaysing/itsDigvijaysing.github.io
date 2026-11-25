@@ -18,6 +18,7 @@ const ERA_COLORS = {
   btech: 'rgba(33, 130, 216, 0.18)', // blue
   cognizant: 'rgba(51, 92, 194, 0.23)', // blue-indigo
   mtech: 'rgba(61, 56, 168, 0.28)', // indigo
+  samsung: 'rgba(66, 46, 160, 0.30)', // indigo-violet
   ahead: 'rgba(71, 36, 150, 0.33)', // violet-indigo
 };
 const ERA_LABEL = {
@@ -25,6 +26,7 @@ const ERA_LABEL = {
   btech: 'B.Tech',
   cognizant: 'Cognizant',
   mtech: 'M.Tech',
+  samsung: 'Samsung',
   ahead: 'Ahead',
 };
 function bandColor(colorId) {

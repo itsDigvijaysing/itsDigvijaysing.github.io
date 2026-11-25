@@ -13,9 +13,9 @@ Personal portfolio site for **Digvijaysing Rajput**, hosted as a **GitHub Pages 
 
 - **Live:** https://itsdigvijaysing.github.io/
 - **Repo:** `itsDigvijaysing/itsDigvijaysing.github.io` (branch `main`)
-- **Stack:** Vite 5 + React 18 + react-router-dom v6, hand-rolled CSS design system, **no runtime UI dependencies**
-- **Deploy:** GitHub Actions (`.github/workflows/deploy.yml`) runs `npm ci && vite build → dist/`, copies `dist/index.html → dist/404.html` (SPA deep-link fallback), and publishes `dist/` via `actions/deploy-pages`. Pages source must be set to **"GitHub Actions"** (not "Deploy from branch").
-- **Related site:** https://magitech.site/ — separate React/Vite project (`~/Documents/Projects/MagiTech-Site`); the **design reference** for craft/typography (not the code to copy).
+- **Stack:** Vite 5 + React 18 + react-router-dom v6, hand-rolled CSS design system, no UI component library; **GSAP** (`gsap` + `@gsap/react`) only for the SplitText hero-title intro in `Home.jsx`
+- **Deploy:** GitHub Actions (`.github/workflows/deploy.yml`) runs `npm ci && npm run build` (= `vite build` + `scripts/prerender-routes.mjs`, which writes one HTML file per route, `about.html`, `projects/<slug>.html` etc., each with that route's title/description/canonical/OG tags from `src/data/pageMeta.js`, plus a `noindex` `404.html` fallback), and publishes `dist/` via `actions/deploy-pages`. Pages source must be set to **"GitHub Actions"** (not "Deploy from branch").
+- **Related site:** https://magitech.in/ (magitech.site no longer resolves, checked 25 Nov 2026), a separate React/Vite project (`~/Documents/Projects/MagiTech-Site`); the **design reference** for craft/typography (not the code to copy).
 
 `dist/` and `node_modules/` are gitignored; the build is produced by CI, never committed.
 
@@ -29,20 +29,21 @@ src/
 ├── main.jsx               # createRoot + BrowserRouter; latin-only @fontsource imports; 3 CSS files
 ├── App.jsx                # skip-link · ScrollToTop · Navbar · <Routes> · Footer; <main> re-keys on route for page-enter anim
 ├── pages/                 # Home, About, Journey, Projects, ProjectDetail, NotFound
-├── components/            # Navbar, Footer, ScrollToTop, HeroBot, ParticleWeb, Magnetic, Reveal, RotatingText, CountUp, ProjectCard, SocialIcons, Workflow, WorkflowLightbox, JourneyPath (Journey-page milestone path, scroll-drawn SVG), DotGrid (cursor-spotlight dot lattice; one instance in App.jsx as a fixed backdrop behind interior pages — skipped on Home where ParticleWeb owns that layer; z-index -1, radial edge mask, resting dots near-invisible)
+├── components/            # Navbar, Footer, ScrollToTop, HeroBot, ParticleWeb, Magnetic, Reveal, RotatingText, CountUp, ProjectCard, SocialIcons, Workflow, WorkflowLightbox, JourneyPath (Journey-page milestone path, scroll-drawn SVG), DotGrid (cursor-spotlight dot lattice; one instance in App.jsx as a fixed backdrop behind interior pages, skipped on Home where ParticleWeb owns that layer; z-index -1, radial edge mask, resting dots near-invisible), AmbientWaveform (canvas waveform on the Phoenix page), ProjectVideo (click-to-play YouTube banner)
 ├── hooks/usePageMeta.js   # per-route title/description/canonical/OG (patches existing head tags; no react-helmet)
-├── components/ProjectReviews/  # 5 bespoke per-project showcase components + index.js slug→component registry (see below)
+├── components/ProjectReviews/  # 9 bespoke per-project showcase components + index.js slug→component registry (see below)
 ├── data/projects.js       # single source of truth (13 projects) + featuredProjects / getProject helpers; each has a `workflow` {caption,rows,edges} driving the SVG diagram + zoom/pan modal on ProjectDetail
+├── data/pageMeta.js       # per-route title/description (+ projectMeta), shared by usePageMeta at runtime and scripts/prerender-routes.mjs at build
 ├── utils/                 # youtube.js (embed/thumbnail URLs) · motion.js (prefersReducedMotion)
 └── styles/                # design-system.css (tokens + primitives) + components.css + project-reviews.css
 public/                    # copied verbatim to dist root
-├── assets/img/            # self.jpg, logo.png, og-cover.png, hero_greeting.webm   ← the ONLY runtime images
+├── assets/img/            # self.jpg, logo.png, og-cover.png (1200x630 link-preview card, index.html points at it), hero_greeting.webm, hero_bot_still.webp   ← the ONLY runtime images
 ├── assets/resume/Digvijaysing_RESUME.pdf
 ├── robots.txt · sitemap.xml
 .github/workflows/deploy.yml
 ```
 
-**Routes:** `/` `/about` `/journey` `/projects` `/projects/:slug` `*`. Deep links work because CI writes `404.html = index.html`.
+**Routes:** `/` `/about` `/journey` `/projects` `/projects/:slug` `*`. Each route is a real file in `dist/` (see Deploy), so GitHub Pages serves it with HTTP 200 (`/about` → `about.html`, `/projects/x` → `projects/x.html`). Before 25 Nov 2026 every route but `/` came from `404.html` with status 404, so search engines skipped them and link previews showed the homepage. A new route needs an entry in `PAGE_META` and in the `pages` list of the script.
 
 **Runtime images live in `public/assets/img/` — not the repo-root `assets/`.** Anything the app references via `/assets/...` resolves to `public/`. See the cleanup note below about the root `assets/` tree.
 
@@ -53,6 +54,8 @@ public/                    # copied verbatim to dist root
 **All 9 visible projects** have a **bespoke detail page**; the 4 `hidden:true` ones keep the generic layout. `index.js` maps slug → component and `ProjectDetail.jsx` branches on that lookup, so **anything absent falls back to generic Overview/Highlights**. Each page is ~200 lines of hand-built JSX whose motif comes from the project itself (hex stat radar, CPU/GPU pipeline, citation card, 3D card stack, channel hub, agent loop ring, class-imbalance bar, role fork, emotion wheel) plus four numbered sections.
 
 - The first 5 (`lightspeak-ai`, `indian-law-ai-portal`, `stat-up`, `gnome-stage-manager`, `ai-linux-assistant`) were **ported from MagiTech**. The other 4 (`web-agents`, `pirvision-classifier`, `messmenu-app`, `emotion-recognition`) were **written from their GitHub repos** - every figure is sourced, never invented to fill a layout.
+- **Phoenix (`ai-linux-assistant`) rewritten 25 Nov 2026** for v3 (one GTK4 app; rules, then a 0.8B router on the Intel iGPU, then the 4B on NVIDIA) from the repo's README, SECURITY.md, ARCHITECTURE.md and bench/README.md. Figures (74.1 %, 2.3 %, 90.1 %, 502 ms, 771 requests, 30 tools) are from `origin/main`; the rules stage was then only in local, unpushed commits. The demo video (`2Qq7Jslxo6Y`) still shows v2.
+- **LightSpeak uses no LangChain or LangGraph** (its repo: vanilla Django; the only LangChain file is dead legacy code, not in the Dockerfile). Its tech stack says "Hybrid RAG" instead; don't add the frameworks or the resume's "18 % relevance" (no source found) to its page.
 - **Showcase layout:** cover → description → facts strip → video banner (only if `videoId`) → review → Workflow as section 05. **No** Overview/Highlights (the review carries them) and **no** Tech Stack block - the facts strip names the top 3 techs instead. Generic layout is unchanged.
 - **`videoId`** in `projects.js` drives a click-to-play banner (`ProjectVideo.jsx`); nothing loads from YouTube until clicked. Without it the banner and its lead-in gap are skipped entirely (`.project-showcase--novideo`).
 - **Prose width:** all review prose caps at `--measure` (`:root`, 56rem). MagiTech's caps were `ch`-based for its 880px column; at this site's 1200px they wrapped text at ~half the width and looked broken. `ch` also scales with font-size, so small-text notes came out far narrower than the lede - hence one rem token, not per-block `ch`.
@@ -117,29 +120,30 @@ Vite only bundles `src/ + public/ + index.html`, so leftover files never ship to
 
 ---
 
-## Content source of truth (resume facts — keep synced across pages + `public/assets/resume/Resume_final.pdf`)
+## Content source of truth (resume facts: keep synced across pages + `public/assets/resume/Digvijaysing_RESUME.pdf`)
 
 | Field | Value |
 |-------|-------|
 | Name | Digvijaysing Rajput |
 | Email | itsdigvijaysing@gmail.com · IIT: cs24mtech14020@iith.ac.in · +91-7447352574 |
-| M.Tech | IIT Hyderabad, 2024–2026, **CGPA 9.02**, NIS TA |
+| M.Tech | IIT Hyderabad, 2024–2026 (completed), **CGPA 9.02**, NIS TA, thesis "Efficient & Deployable LLM Agents" (guide Dr. Vineeth N Balasubramanian) |
 | B.E. | NBN Sinhgad, SPPU, 2018–2022, **CGPA 9.15** |
-| Samsung SRIB | AI Research Intern, Bangalore, **Jul 2025 – Jan 2026** (not "Present") |
+| Samsung SRIB | **Senior Engineer**, Samsung R&D Institute India, Bangalore (SRIB), **Nov 2026 – Present**; before that AI Research Intern, Jul 2025 – Jan 2026 |
 | Cognizant | Salesforce Developer, Pune, Jul 2022 – Jul 2024 |
 | Microsoft FRT | Cloud & DevOps Intern, Mar–May 2022 |
-| Research | Adversarial Robustness in Florence-2 VLM — **IEEE APSCON 2026 accepted** |
-| Awards | Winner ET Campus Star; 1st AI Ideathon / Innovation Elan / Dev Duel; 2nd Pulse Quest |
+| Research | Adversarial Robustness in Florence-2 VLM, **IEEE APSCON 2026 accepted** · DES (long-tailed exemplar-free CL on VLM), **IJCAI GLOW 2026 Workshop accepted**, *co-developed* (not "proposed") |
+| Awards | Winner ET Campus Star; 1st AI Ideathon / Innovation Elan / Dev Duel; 2nd Pulse Quest (site only, dropped from the resume for space); GNOME extensions (Stage Manager, Screen Time) 4,500+ downloads |
 
 ### Work experience detail
-- **Samsung SRIB — AI Research Intern** (Jul 2025 – Jan 2026): fine-tuned Web Agent models (+400% task success); reduced token payload 40% (lower latency/cost); built evaluation & benchmarking pipeline.
+- **Samsung SRIB, Senior Engineer** (Nov 2026 – Present): extending the internship's LLM web-agent work into AI-driven web interaction features.
+- **Samsung SRIB, AI Research Intern** (Jul 2025 – Jan 2026): fine-tuned Web Agent models (4× task success over the previous model; the old "+400%" was wrong maths, 400% more is 5×); reduced token payload 40% (lower latency/cost); built evaluation & benchmarking pipeline.
 - **Cognizant — Salesforce Developer** (Jul 2022 – Jul 2024): enterprise Salesforce; Einstein AI for lead scoring/case assignment (−40% manual effort); refactored legacy 60K→35K lines.
 - **Microsoft FRT — Cloud & DevOps Intern** (Mar–May 2022): containerized Mess Menu React app to Azure App Service with CI/CD.
 
 ### Featured projects (homepage) & skills
-- Featured are `featured:true` in `src/data/projects.js` (currently: LightSpeak AI, Indian Law AI Portal, Stat-Up, AI Linux Assistant, GNOME Stage Manager, PIRvision Classifier).
+- Featured are `featured:true` in `src/data/projects.js` (currently: LightSpeak AI, Indian Law AI Portal, Stat-Up, Phoenix, GNOME Stage Manager, PIRvision Classifier). **Phoenix** was "AI Linux Assistant": the slug stays `ai-linux-assistant` and the repo is still `AI_Linux_Assistant`.
 - `hidden:true` projects (Jira Automation Portal, Salesforce Apex Code Fixer, Shooting Competition, Leave Management System) are collapsed behind a "Show N more" toggle on `/projects` (see `Projects.jsx`) instead of shown directly — basic/coursework-grade work, kept but deprioritized.
-- ML: LLM/VLM Fine-Tuning, Deep Learning, Deep RL, LoRA, RAG, Transformers · Languages: Python, C++, SQL, JavaScript · Web: React, Django, Node, REST · Tools: Git, Docker, Linux, Azure, CI/CD, Hugging Face, PyTorch · Salesforce (legacy): Apex, LWC, Einstein AI.
+- Skills (About page, from the Nov 2026 resume): LLM & Agents: LangChain, RAG, Agentic Workflows, Tool Calling, MCP, FAISS, Prompt Engineering · ML: LLM/VLM Fine-Tuning (LoRA), NLP, Computer Vision, Transformers, Deep RL, PyTorch, LLM Evaluation, Model Quantization · Languages & Web: Python, C++, SQL, FastAPI, Django, Node.js, React.js · Tools: Git, Docker, Linux, Azure, CI/CD, Hugging Face. The resume's AI coding tools (Copilot, Claude Code, Cursor) stay off the site: they name AI vendors. LangGraph is on the resume but left off the site (user's choice, 25 Nov 2026): no project of his uses it.
 - Certifications — Salesforce: Admin, AI Associate, Platform Dev I & II, JS Dev I, Process Automation AP, Copado I & II · Cloud: Microsoft AZ-900.
 
 ---
@@ -149,7 +153,7 @@ Vite only bundles `src/ + public/ + index.html`, so leftover files never ship to
 | Resource | Path / URL |
 |----------|-----------|
 | Live site | https://itsdigvijaysing.github.io/ |
-| MagiTech (design reference) | https://magitech.site/ · repo `~/Documents/Projects/MagiTech-Site/` |
-| Latest resume PDF | `~/Downloads/Resumes/RESUME.pdf` |
+| MagiTech (design reference) | https://magitech.in/ · repo `~/Documents/Projects/MagiTech-Site/` |
+| Latest resume PDF | `~/Downloads/Curr.pdf` (25 Nov 2026, copied byte-for-byte to `public/assets/resume/Digvijaysing_RESUME.pdf`) |
 | LinkedIn / GitHub / Medium | in/digvijaysing · github.com/itsDigvijaysing · digvijaysing.medium.com |
 | LightSpeak AI (featured) | https://lightspeak.ai/ |

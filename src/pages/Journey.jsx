@@ -1,6 +1,7 @@
 import Reveal from '../components/Reveal.jsx';
 import JourneyPath from '../components/JourneyPath.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
+import { PAGE_META } from '../data/pageMeta.js';
 
 // Authored as education/work eras, oldest to newest, each optionally carrying
 // the research/product/internship milestones that happened during it (e.g.
@@ -69,9 +70,9 @@ const journeyEras = [
         period: 'Jul 2025 – Jan 2026',
         kind: 'work',
         title: 'AI Research Intern',
-        org: 'Samsung Research Institute Bangalore (SRIB)',
+        org: 'Samsung R&D Institute India, Bangalore (SRIB)',
         points: [
-          'Fine-tuned web-agent models, lifting task success rate roughly 4x with steadier workflows.',
+          'Fine-tuned web-agent models, lifting task success rate 4x over the previous model, with steadier workflows.',
           'Reworked the agent framework to cut token payload ~40%, lowering latency and cost.',
           'Stood up a reproducible evaluation and benchmarking pipeline.',
         ],
@@ -102,14 +103,31 @@ const journeyEras = [
         title: 'DES: Efficient Long-Tailed Exemplar-Free CL on VLM',
         org: 'IJCAI GLOW 2026 Workshop · Accepted',
         points: [
-          'Proposed Dynamic Expert Saturation (DES), a two-phase framework for long-tailed, exemplar-free continual learning in vision-language models.',
+          'Co-developed Dynamic Expert Saturation (DES), a two-phase framework for long-tailed, exemplar-free continual learning in vision-language models.',
           'Achieved up to 3.08% higher accuracy than the strongest baseline and 2.5–3.9x faster performance than prompt-based methods on CIFAR100-LT and ImageNet100-LT.',
+        ],
+      },
+      {
+        period: '2026',
+        kind: 'research',
+        title: 'M.Tech Thesis: Efficient & Deployable LLM Agents',
+        org: 'IIT Hyderabad · Guide: Dr. Vineeth N Balasubramanian',
+        points: [
+          'Fine-tuned a 1.7B web agent with reinforcement learning until it beat a 32B model - 34.8% vs 16.9% success on WebArena-Lite.',
         ],
       },
     ],
   },
   {
-    period: '2026 →',
+    period: 'Nov 2026 – Present',
+    kind: 'work',
+    title: 'Senior Engineer',
+    org: 'Samsung R&D Institute India, Bangalore (SRIB)',
+    color: 'samsung',
+    points: ['Extending the internship’s LLM web-agent work into AI-driven web interaction features.'],
+  },
+  {
+    period: 'Next →',
     kind: 'future',
     title: 'The Road Ahead',
     org: 'Still building, still learning',
@@ -129,12 +147,7 @@ const journey = journeyEras.flatMap((era) => {
 });
 
 export default function Journey() {
-  usePageMeta({
-    title: 'Journey - Digvijaysing Rajput',
-    description:
-      'The milestone path of Digvijaysing Rajput - education and work from 2014 to 2026, from SSC through IIT Hyderabad and Samsung SRIB, with each era color-banded so the research, products and internships within it are easy to place.',
-    path: '/journey',
-  });
+  usePageMeta(PAGE_META['/journey']);
 
   return (
     <section className="page-top">

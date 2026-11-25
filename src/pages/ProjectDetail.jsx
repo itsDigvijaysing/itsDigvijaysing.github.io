@@ -4,17 +4,14 @@ import Workflow from '../components/Workflow.jsx';
 import ProjectVideo from '../components/ProjectVideo.jsx';
 import { getProjectReview } from '../components/ProjectReviews/index.js';
 import usePageMeta from '../hooks/usePageMeta.js';
+import { NOT_FOUND_META, projectMeta } from '../data/pageMeta.js';
 import { getProject } from '../data/projects.js';
 
 export default function ProjectDetail() {
   const { slug } = useParams();
   const p = getProject(slug);
 
-  usePageMeta({
-    title: p ? `${p.title} - Digvijaysing Rajput` : 'Project not found - Digvijaysing Rajput',
-    description: p ? p.overview || p.desc : 'The project you are looking for could not be found.',
-    path: p ? `/projects/${p.slug}` : '/projects',
-  });
+  usePageMeta(p ? projectMeta(p) : { ...NOT_FOUND_META, path: '/projects' });
 
   if (!p) {
     return (

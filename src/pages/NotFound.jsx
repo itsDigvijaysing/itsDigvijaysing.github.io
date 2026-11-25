@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta.js';
+import { NOT_FOUND_META } from '../data/pageMeta.js';
 
 export default function NotFound() {
-  usePageMeta({ title: 'Not found - Digvijaysing Rajput', description: 'Page not found.' });
+  usePageMeta(NOT_FOUND_META);
 
   return (
     <section className="page-top">

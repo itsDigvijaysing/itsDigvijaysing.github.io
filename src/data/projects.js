@@ -22,17 +22,17 @@ const projects = [
     "private": false,
     "overview": "LightSpeak lets B2B companies drop a voice, chat, and email AI agent into their product that only answers from that tenant's own documents, so support scales without sacrificing accuracy or leaking data across customers. I built it as a metered, multi-tenant platform from the ground up - a Django backend runs retrieval and billing for every text turn, while a dedicated low-latency worker handles real-time voice.",
     "highlights": [
-      "Hybrid RAG: one SQL query blends pgvector cosine (0.7) + Postgres BM25 (0.3), org-scoped for tenant isolation, with optional Cohere rerank and an exact-match FAQ fast-path",
+      "Hybrid RAG: one SQL query blends pgvector cosine (0.7) + Postgres BM25 (0.3), org-scoped for tenant isolation, with an optional reranker and an exact-match FAQ fast-path",
       "One Django orchestrator per text turn: wallet reserve -> RAG -> persona/opacity prompt -> llm LLM -> vendor-name sanitizer -> wallet commit; retrieved docs fenced in a per-turn random nonce to resist prompt injection",
       "Real-time voice worker runs STT->LLM->TTS in-process. Django is only called for persona, history, and metering, keeping latency low. Each tenant can upload a unique voice for TTS."
     ],
     "techStack": [
       "Django 5",
       "PostgreSQL + pgvector",
-      "Langchain Agents",
+      "Hybrid RAG",
       "STT/TTS",
       "Unique voice",
-      "EmbeddingGemma embeddings",
+      "Embedding model",
       "React 19 + Tailwind"
     ],
     "workflow": {
@@ -74,7 +74,7 @@ const projects = [
       { "id": "S8", "label": "⑧ Memory Vault + message log", "kind": "step" }
     ],
     [
-      { "id": "T", "label": "TTS · aura / Cartesia", "kind": "step" },
+      { "id": "T", "label": "TTS engine", "kind": "step" },
       { "id": "R", "label": "Text / Email response", "kind": "step" }
     ],
     [
@@ -131,8 +131,7 @@ const projects = [
       "React 18",
       "FAISS",
       "Sentence-Transformers",
-      " Groq LLM",
-      "Google Gemini",
+      "Hosted LLM API",
       "rank_bm25",
       "PyPDF2"
     ],
@@ -182,7 +181,7 @@ const projects = [
         [
           {
             "id": "G",
-            "label": " Llama / Gemini",
+            "label": "Hosted LLM",
             "kind": "model"
           }
         ],
@@ -604,7 +603,7 @@ const projects = [
     "highlights": [
       "Offline-first RPG engine: task points accumulate into 6 stats shown on a hexagon radar; a midnight DecayEngine raises/lowers rank E->S by streak consistency, with Streak Freeze Shields absorbing idle days.",
       "Todoist integration via a 15-min WorkManager sync worker over Ktor: maps priority->points and labels->stats, awards idempotently keyed by externalId (unique index) so overlapping syncs never double-count.",
-      "Privacy-first: all data in Room, no accounts/analytics; Todoist + Gemini tokens live in AES-256-GCM EncryptedSharedPreferences, and the Gemini 2.5 Flash AI coach is fully opt-in."
+      "Privacy-first: all data in Room, no accounts/analytics; Todoist + LLM API tokens live in AES-256-GCM EncryptedSharedPreferences, and the LLM-powered AI coach is fully opt-in."
     ],
     "techStack": [
       "Kotlin",
@@ -614,7 +613,7 @@ const projects = [
       "Ktor",
       "Koin",
       "DataStore",
-      "Gemini API",
+      "Hosted LLM API",
       "Haze"
     ],
     "workflow": {
@@ -746,20 +745,20 @@ const projects = [
       "Productivity",
       "Full Stack"
     ],
-    "desc": "Django + React portal that turns one requirement into a Jira parent ticket, AI-generated dev tasks, and per-task test-case sub-tasks via Gemini.",
+    "desc": "Django + React portal that turns one requirement into a Jira parent ticket, AI-generated dev tasks, and per-task test-case sub-tasks via a hosted LLM.",
     "link": null,
     "github": "https://github.com/itsDigvijaysing/Jira_Automation_Portal",
     "private": false,
     "overview": "Breaking one requirement into a parent ticket, dev tasks, and test cases in Jira is repetitive busywork every sprint. This portal automates that: type a free-form requirement and an LLM fans it out into a linked Jira ticket tree - parent task, 3-5 dev tasks, and test-case sub-tasks for each - with fallbacks so a flaky AI call never blocks the workflow.",
     "highlights": [
       "One free-form requirement fans out to a parent Jira Task, 3-5 AI dev Tasks (linked via 'Relates'), and 3-5 test-case sub-tasks per task, all created through Jira Cloud REST v3.",
-      "Gemini output forced to JSON via response_mime_type with a fence-tolerant parser; dual API-key rotation plus backoff on 429/quota, and hardcoded fallback tasks/test cases when the model is unavailable.",
-      "Reads issues via Atlassian's new /rest/api/3/search/jql endpoint with nextPageToken pagination (legacy /search removed Oct 2025); DRF views over a thread-locked singleton Gemini client."
+      "LLM output forced to JSON via the API's JSON response mode, with a fence-tolerant parser; dual API-key rotation plus backoff on 429/quota, and hardcoded fallback tasks/test cases when the model is unavailable.",
+      "Reads issues via Atlassian's new /rest/api/3/search/jql endpoint with nextPageToken pagination (legacy /search removed Oct 2025); DRF views over a thread-locked singleton LLM client."
     ],
     "techStack": [
       "Django",
       "Django REST Framework",
-      "Google Gemini (google-genai)",
+      "Hosted LLM API",
       "Jira Cloud REST API v3",
       "React",
       "Tailwind CSS",
@@ -793,7 +792,7 @@ const projects = [
         [
           {
             "id": "D",
-            "label": "Gemini: Dev Tasks",
+            "label": "LLM: Dev Tasks",
             "kind": "model"
           },
           {
@@ -812,7 +811,7 @@ const projects = [
         [
           {
             "id": "F",
-            "label": "Gemini: Test Cases",
+            "label": "LLM: Test Cases",
             "kind": "model"
           }
         ],
@@ -876,8 +875,8 @@ const projects = [
     }
   },
   {
-    "title": "AI Linux Assistant",
-    "subtitle": "Local-First Voice Assistant for GNOME/Wayland",
+    "title": "Phoenix",
+    "subtitle": "Local Voice Assistant for Linux",
     "slug": "ai-linux-assistant",
     "videoId": "2Qq7Jslxo6Y",
     "date": "2026-02",
@@ -885,65 +884,66 @@ const projects = [
     "tags": [
       "AI",
       "LLM",
-      "Python"
+      "Python",
+      "Desktop"
     ],
-    "desc": "Local-first voice assistant for GNOME/Wayland that holds a conversation and actually acts on the machine: full-duplex barge-in, typed MCP tools instead of injected commands, and a safety gate built for a model that can run shell commands.",
+    "desc": "Fully on-device voice assistant for Linux. Rules, a 0.8B model on the Intel iGPU and a 4B LLM on NVIDIA split the work, so most commands never wake the big GPU; 30 typed tools plus MCP, behind one safety gate.",
     "link": null,
     "github": "https://github.com/itsDigvijaysing/AI_Linux_Assistant",
     "private": false,
-    "overview": "Most voice assistants need the cloud and can't touch your desktop. This is a fully local, no-API-key voice assistant for Linux - speech in, a local LLM reasons about it, speech out - that can also safely act on your GNOME session (volume, brightness, apps, files) through a permissioned tool layer, so it stays useful offline and never sends what you say anywhere.",
+    "overview": "Most voice assistants need the cloud and can't touch your desktop. Phoenix runs speech recognition, the language models and the voice on your own laptop - no account, no API key, no cloud - and acts on the GNOME session through typed tools behind one safety gate. It is built for an ordinary gaming laptop (a 6 GB RTX 3060 Mobile and an Intel iGPU): on battery a small model on the Intel GPU handles most commands so the NVIDIA GPU can sleep.",
     "highlights": [
-      "Fully local, no-API-key pipeline: Parakeet ASR + qwen3:4b (Ollama) + SuperTonic TTS, with the LLM on the GPU and all speech models on CPU as ONNX to fit a 6 GB VRAM budget.",
-      "The qwen3 brain acts as a router: it either speaks a reply or calls one of 13 typed desktop tools (brightness, volume, lock, screenshot, open app/link, media, night light, DND, terminal, clipboard...) plus a shell fallback via MCP.",
-      "Fail-safe safety layer: gated actions denied unless the session is armed, an autonomy hard-floor deny, a catastrophic-command denylist, and systemd-run resource caps, all sharing one execution chokepoint."
+      "Three-stage, confidence-gated router: plain commands are matched by rules with no model, a 0.8B decision model on the Intel iGPU (8-bit OpenVINO) picks most of the rest, and only what it is unsure of, plus all chat, wakes the 4B LLM on the NVIDIA GPU.",
+      "Measured on a 771-request test set: the 0.8B router acts correctly on its own for 74.1% of real commands with 2.3% wrong actions and a 502 ms median, and scores 90.1% on 10 tools it had never seen.",
+      "One safety gate for every action that changes something: a catastrophic-command blocklist, shell commands shown in full and confirmed by voice or on screen, kernel-enforced systemd-run memory and task caps, and no sudo at runtime."
     ],
     "techStack": [
       "Python",
-      "Ollama (qwen3:4b)",
+      "GTK4 + libadwaita",
+      "OpenVINO (Intel iGPU)",
+      "Ollama (local LLM)",
       "ONNX Runtime",
       "Parakeet ASR",
       "SuperTonic TTS",
-      "Silero VAD",
       "MCP (Model Context Protocol)",
-      "PipeWire",
-      "GNOME Shell extension"
+      "PipeWire"
     ],
     "workflow": {
-      "caption": "Speech in -> local reasoning -> speak or act on desktop",
+      "caption": "Battery mode: rules first, then the 0.8B router on the iGPU; the 4B on NVIDIA wakes only when needed",
       "rows": [
         [
           {
             "id": "A",
-            "label": "Mic / text input",
+            "label": "Mic: wake word or shortcut",
             "kind": "input"
           }
         ],
         [
           {
             "id": "B",
-            "label": "Silero VAD (CPU)",
-            "kind": "step"
-          }
-        ],
-        [
-          {
-            "id": "C",
-            "label": "Parakeet ASR (ONNX)",
+            "label": "VAD + echo cancel + Parakeet ASR (CPU)",
             "kind": "model"
           }
         ],
         [
           {
+            "id": "C",
+            "label": "Plain command verb?",
+            "kind": "decision"
+          }
+        ],
+        [
+          {
             "id": "D",
-            "label": "qwen3:4b - Ollama",
+            "label": "0.8B router · Intel iGPU",
             "kind": "model"
           }
         ],
         [
           {
             "id": "E",
-            "label": "Answer or act?",
-            "kind": "decision"
+            "label": "4B LLM · NVIDIA",
+            "kind": "model"
           }
         ],
         [
@@ -954,14 +954,14 @@ const projects = [
           },
           {
             "id": "G",
-            "label": "SuperTonic TTS",
+            "label": "SuperTonic TTS (CPU)",
             "kind": "model"
           }
         ],
         [
           {
             "id": "H",
-            "label": "MCP desktop tool",
+            "label": "30 tools + MCP servers",
             "kind": "step"
           },
           {
@@ -982,11 +982,23 @@ const projects = [
         },
         {
           "from": "C",
-          "to": "D"
+          "to": "F",
+          "label": "rules match"
+        },
+        {
+          "from": "C",
+          "to": "D",
+          "label": "no"
         },
         {
           "from": "D",
-          "to": "E"
+          "to": "F",
+          "label": "sure"
+        },
+        {
+          "from": "D",
+          "to": "E",
+          "label": "unsure or chat"
         },
         {
           "from": "E",
@@ -1001,13 +1013,7 @@ const projects = [
         {
           "from": "F",
           "to": "H",
-          "label": "if armed"
-        },
-        {
-          "from": "H",
-          "to": "D",
-          "label": "result",
-          "back": true
+          "label": "allowed"
         },
         {
           "from": "G",
@@ -1290,7 +1296,7 @@ const projects = [
       "Hugging Face Transformers",
       "DistilBERT",
       "librosa",
-      "OpenAI Whisper",
+      "Whisper",
       "scikit-learn",
       "NumPy / pandas"
     ],

@@ -1,13 +1,9 @@
 import Reveal from '../components/Reveal.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
+import { PAGE_META } from '../data/pageMeta.js';
 
 export default function About() {
-  usePageMeta({
-    title: 'About',
-    description:
-      'Background, experience, education, M.Tech thesis, research, skills and certifications of Digvijaysing Rajput - M.Tech CS at IIT Hyderabad, former AI Research Intern at Samsung SRIB.',
-    path: '/about',
-  });
+  usePageMeta(PAGE_META['/about']);
 
   return (
     <>
@@ -19,10 +15,12 @@ export default function About() {
               Experience &amp; <span className="serif">Skills</span>
             </h1>
             <p>
-              I&rsquo;m doing my M.Tech in Computer Science at IIT Hyderabad, where I also work as a
-              Teaching Assistant. Most of my time goes into applied AI: fine-tuning LLMs and VLMs, building
-              web agents, and RAG systems. Before this I spent four years across AI research, enterprise
-              Salesforce, and cloud, and I still build open-source desktop and developer tools on the side.
+              I&rsquo;m a Senior Engineer at Samsung R&amp;D Institute India, Bangalore (SRIB), taking the LLM
+              web-agent work from my internship there into AI-driven web interaction features. Before that I did
+              my M.Tech in Computer Science at IIT Hyderabad, where I was also a Teaching Assistant, and spent two
+              years as a Salesforce developer at Cognizant. Most of my time goes into applied AI: fine-tuning LLMs
+              and VLMs, building web agents, and RAG systems, and I still build open-source desktop and developer
+              tools on the side.
             </p>
           </Reveal>
 
@@ -31,12 +29,22 @@ export default function About() {
               <h2 className="col-label">Work Experience</h2>
               <div className="timeline">
                 <div className="timeline-item">
+                  <div className="timeline-item__date">Nov 2026 – Present</div>
+                  <div>
+                    <h3>Senior Engineer</h3>
+                    <p className="timeline-item__org">Samsung R&amp;D Institute India, Bangalore (SRIB)</p>
+                    <ul>
+                      <li>Extending the internship&rsquo;s LLM web-agent work into AI-driven web interaction features.</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="timeline-item">
                   <div className="timeline-item__date">Jul 2025 – Jan 2026</div>
                   <div>
                     <h3>AI Research Intern</h3>
-                    <p className="timeline-item__org">Samsung Research Institute Bangalore (SRIB)</p>
+                    <p className="timeline-item__org">Samsung R&amp;D Institute India, Bangalore (SRIB)</p>
                     <ul>
-                      <li>Fine-tuned web-agent models, lifting task success rate roughly 4× with steadier workflows.</li>
+                      <li>Fine-tuned web-agent models, lifting task success rate 4× over the previous model, with steadier workflows.</li>
                       <li>Reworked the agent framework to cut token payload ~40%, lowering latency and cost.</li>
                       <li>Stood up a reproducible evaluation and benchmarking pipeline.</li>
                     </ul>
@@ -102,15 +110,21 @@ export default function About() {
               </div>
 
               <h2 className="col-label" style={{ marginTop: '2.75rem' }}>Skills</h2>
-              <p className="subhead">Machine Learning &amp; AI</p>
+              <p className="subhead">LLM &amp; Agents</p>
               <div className="skills-grid" style={{ marginBottom: '1.5rem' }}>
-                {['LLM / VLM Fine-Tuning', 'RAG', 'Transformers', 'LoRA', 'Deep RL'].map((s) => (
+                {['LangChain', 'RAG', 'Agentic Workflows', 'Tool Calling', 'MCP', 'FAISS', 'Prompt Engineering'].map((s) => (
+                  <span className="skill-pill" key={s}>{s}</span>
+                ))}
+              </div>
+              <p className="subhead">Machine Learning</p>
+              <div className="skills-grid" style={{ marginBottom: '1.5rem' }}>
+                {['LLM / VLM Fine-Tuning (LoRA)', 'NLP', 'Computer Vision', 'Transformers', 'Deep RL', 'PyTorch', 'LLM Evaluation', 'Model Quantization'].map((s) => (
                   <span className="skill-pill" key={s}>{s}</span>
                 ))}
               </div>
               <p className="subhead">Languages &amp; Web</p>
               <div className="skills-grid" style={{ marginBottom: '1.5rem' }}>
-                {['Python', 'C++', 'SQL', 'React.js', 'Django', 'Node.js'].map((s) => (
+                {['Python', 'C++', 'SQL', 'FastAPI', 'Django', 'Node.js', 'React.js'].map((s) => (
                   <span className="skill-pill" key={s}>{s}</span>
                 ))}
               </div>
@@ -154,7 +168,7 @@ export default function About() {
                     <h3>DES: Efficient Long-Tailed Exemplar-Free CL on VLM</h3>
                     <p className="timeline-item__org">IJCAI GLOW 2026 Workshop · Accepted</p>
                     <ul>
-                      <li>Proposed Dynamic Expert Saturation (DES), a two-phase framework for long-tailed, exemplar-free continual learning in vision-language models.</li>
+                      <li>Co-developed Dynamic Expert Saturation (DES), a two-phase framework for long-tailed, exemplar-free continual learning in vision-language models.</li>
                       <li>Achieved up to 3.08% higher accuracy than the strongest baseline and 2.5–3.9x faster performance than prompt-based methods on CIFAR100-LT and ImageNet100-LT.</li>
                     </ul>
                   </div>
@@ -230,6 +244,7 @@ export default function About() {
                       <li>Winner: ET Campus Star (Economic Times)</li>
                       <li>1st place: AI Ideathon, Innovation Elan &amp; Dev Duel (IIT Hyderabad)</li>
                       <li>2nd place: Pulse Quest Hackathon (IIT Hyderabad)</li>
+                      <li>Open-source GNOME Shell extensions (Stage Manager, Screen Time): 4,500+ downloads</li>
                     </ul>
                   </div>
                 </div>

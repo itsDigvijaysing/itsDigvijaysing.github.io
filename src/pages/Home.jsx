@@ -11,20 +11,21 @@ import HeroBot from '../components/HeroBot.jsx';
 import ProjectCard from '../components/ProjectCard.jsx';
 import SocialLinks from '../components/SocialIcons.jsx';
 import usePageMeta from '../hooks/usePageMeta.js';
+import { PAGE_META } from '../data/pageMeta.js';
 import { featuredProjects } from '../data/projects.js';
 
 gsap.registerPlugin(useGSAP, SplitText);
 
 const roles = [
+  'Senior Engineer · Samsung SRIB',
   'AI Researcher & Full-Stack Developer',
-  'M.Tech CS · IIT Hyderabad',
-  'Ex-Samsung SRIB · Ex-Cognizant',
+  'M.Tech CSE · IIT Hyderabad',
   'Conversational AI · Web Agents · RAG',
 ];
 
 const stats = [
   { value: 2, decimals: 0, suffix: '+', label: 'Years Industry Experience' },
-  { value: 2, decimals: 0, suffix: '', label: 'Accepted Research Paper' },
+  { value: 2, decimals: 0, suffix: '', label: 'Accepted Research Papers' },
   { value: 9.02, decimals: 2, suffix: '', label: 'M.Tech CGPA · IIT Hyderabad' },
   { value: 9.15, decimals: 2, suffix: '', label: 'B.E. CGPA · NBN Sinhgad, SPPU' },
 ];
@@ -48,12 +49,7 @@ export default function Home() {
   const heroRef = useRef(null);
   const titleRef = useRef(null);
 
-  usePageMeta({
-    title: 'Digvijaysing Rajput',
-    description:
-      'Portfolio of Digvijaysing Rajput - M.Tech CS at IIT Hyderabad, former AI Research Intern at Samsung SRIB. Conversational AI, web agents, RAG and full-stack products.',
-    path: '/',
-  });
+  usePageMeta(PAGE_META['/']);
 
   // Battle-tested GSAP SplitText intro on the hero heading. Chars fade in AS
   // they settle (opacity tied to the transform) so the white letters never
@@ -103,7 +99,7 @@ export default function Home() {
             </h1>
             <p className="hero__lead">
               I like building AI that actually <em className="serif">ships</em>. Lately that&rsquo;s meant
-              fine-tuning web agents at Samsung, building multi-channel conversational platforms, and
+              building LLM web agents at Samsung, shipping multi-channel conversational platforms, and
               taking research through to production.
             </p>
             <div className="hero__actions">
